@@ -1,13 +1,13 @@
 ###############################################################
 # ECE586 - Computer Architecture
-# RISC-V ISA Simulator
+#			RISC-V ISA SIMULATOR
 #
 # Group 9: Supreet Gulavani, Yashodhan Wagle,
-#			Ramaa Potnis, Preksa Gandhi
+#			Ramaa Potnis, Preksha Gandhi
 ###############################################################
 
 # Target
-TARGET		:= ece586_isa_simulator
+TARGET		:= ece585_memory_controller
 
 # Directories for source files and builds
 SRC_DIR 	:= src
