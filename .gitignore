@@ -1,0 +1,5 @@
+.vscode/settings.json
+.DS_Store
+input.txt
+test.txt
+test_script.sh
