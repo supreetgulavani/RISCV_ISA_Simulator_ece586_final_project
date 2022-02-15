@@ -7,7 +7,7 @@
 ###############################################################
 
 # Target
-TARGET		:= ece585_memory_controller
+TARGET		:= ece586_isa_simulator
 
 # Directories for source files and builds
 SRC_DIR 	:= src
