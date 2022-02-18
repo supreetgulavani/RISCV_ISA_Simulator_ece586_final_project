@@ -3,8 +3,4 @@
 
 #include <ostream>
 
-// Stack Pointer
-extern uint64_t stack_pointer;
-
-
 #endif
