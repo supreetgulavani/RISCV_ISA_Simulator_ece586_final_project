@@ -11,6 +11,7 @@
  * Parses the input trace string
  * Prints to debug console if built in debug mode
  */
+
 void read_file(std::string ip_string, request& req)
 {
     uint32_t substr_begin = 0, substr_end, pos = 0;
@@ -19,6 +20,14 @@ void read_file(std::string ip_string, request& req)
     uint8_t token_count = 0;
 
     bool token_valid {false};
+
+    /*std::string fn = "yes.mem";
+    if(fn.substr(fn.find_last_of(".") + 1) != "mem") {
+        std::cout << "Not a mem file. Please cross compile using rvgcc first." << std::endl;
+    } 
+    else {
+        std::cout << "Parsing.." << std::endl;
+    }*/
 
     // Traverse the line and get 3 tokens
     while (pos < ip_string.length()-1) {
@@ -64,8 +73,8 @@ void read_file(std::string ip_string, request& req)
 
     //Get the data into variables
     if (token_valid == true) {
-        req.program_counter = std::stoi(tokens[0], nullptr, 16);
-        req.address = std::stoull(tokens[1], nullptr, 16);
+        req.instruction_location = std::stoi(tokens[0], nullptr, 16); 
+        req.instruction = std::stoull(tokens[1], nullptr, 16);
     } else {
         req.valid = false;
     }
