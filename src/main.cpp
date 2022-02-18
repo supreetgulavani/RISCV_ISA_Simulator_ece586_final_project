@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
             mem_fstream << op.str();
         }
           if (!(ip_mem_fstream->is_open())) {
-            std::cout << "\n -- Simulation Over! -- \n" << std::endl;
+            std::cout << "\n -- Input file Over! -- \n" << std::endl;
             break;
           }
     }
@@ -92,6 +92,11 @@ int main(int argc, char *argv[])
 
     // Close output file
     mem_fstream.close();
+    
+    //print mem image
+    std::cout << "\n-----------Memory--------------" << std::endl;
+    isa.print_mem();
+    std::cout << "\n---------End Memory------------" << std::endl;
 
     return 0;
 }

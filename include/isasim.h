@@ -18,6 +18,17 @@ class isa_sim{
     uint64_t program_counter;
     uint64_t stack_pointer;
 
+    //Print memory image
+    void print_mem(){
+        int mem_elements = 0;
+        //100 elements only for now.
+        //simulation too slow with 64k.
+        for (int i = mem_elements; i <= 100; i++){
+            std::cout << i << ":" << std::uppercase << std::hex << (int)memory_array[i] << "\t";
+        }
+    }
+
+
 };
 
 #endif
