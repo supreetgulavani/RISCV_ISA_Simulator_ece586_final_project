@@ -5,9 +5,7 @@
 
 #include "commondefs.h"
 #include "fileparse.h"
-
-
-uint64_t stack_pointer = 65535;
+#include "isasim.h"
 
 int main(int argc, char *argv[])
 {
@@ -20,11 +18,13 @@ int main(int argc, char *argv[])
     std::ofstream mem_fstream;
     std::string op_fname;
 
+    isa_sim isa;
+
     // Check if input trace file is provided
     // First argument is always executable name
-    if (argc < 3) {
+    if (argc < 5) {
         std::cerr << "Wrong command..\n\n";
-        std::cerr << "Usage: ./ece586_isa_simulator <input_mem_file> <output_mem_file>" << std::endl;
+        std::cerr << "Usage: ./ece586_isa_simulator <input_mem_file> <output_mem_file> <program_counter> <stack_pointer>" << std::endl;
         return 1;
     }
 
@@ -43,19 +43,26 @@ int main(int argc, char *argv[])
     op_fname = argv[2];
     std::cout << "Output File: " << op_fname << std::endl;
     mem_fstream.open(op_fname, std::ios::out);
-    
-    // Instantiate DRAM Controller
 
+    // Take Program Counter as input
+    isa.program_counter = std::strtoul(argv[3], nullptr, 16);
+    std::cout << "Program Counter: " << std::uppercase << std::hex << isa.program_counter << std::endl;
+
+    // Take Stack Pointer as input
+    isa.stack_pointer = std::strtoul(argv[4], nullptr, 16);
+    std::cout << "Stack Pointer: " << std::uppercase << std::hex << isa.stack_pointer << std::endl;
+ 
     request req; 
-
     // Print starting message
     std::cout << "\n -- Starting Simulation -- \n" << std::endl;
 
+ 
     while (true) {
         // Check if we can read in a request
         if ((ip_mem_fstream->is_open())) {
             // Read a new line
             ip_string = "";
+            //req.instruction_location =  req.instruction_location + 4;
             while (ip_string.empty() && ip_mem_fstream->is_open()) {
                 std::getline(*ip_mem_fstream,ip_string);
                 // File over?
@@ -65,13 +72,15 @@ int main(int argc, char *argv[])
                 }
             }
             read_file(ip_string, req);
+
             std::cout  << req << std::endl;
             std::stringstream op;
     
-            op  << req.program_counter << "\t" << std::hex <<req.address << "\t" << std::dec << stack_pointer << std::endl;
-            std::cout << op.str();
+            op  << req.instruction_location << " " << std::hex << req.instruction << " "<< std::uppercase << std::hex << isa.program_counter 
+                << std::uppercase << std::hex << " " << isa.stack_pointer << std::endl;
+            //std::cout << op.str();
+            // Add the parsed contents to a file  (showoff nothing else)
             mem_fstream << op.str();
-            
         }
           if (!(ip_mem_fstream->is_open())) {
             std::cout << "\n -- Simulation Over! -- \n" << std::endl;
