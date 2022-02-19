@@ -12,7 +12,7 @@
 - You should now have the executable named `ece586_isa_simulator` in the top directory.
 - Run it as follows:
 
-    ```$ ./ece586_isa_simulato <input_mem_file> <output_mem_file> <program_counter> <stack_pointer>```
+    ```$ ./ece586_isa_simulator <input_mem_file> <output_mem_file> <program_counter> <stack_pointer>```
 
 - For example, if my input mem file is `input.mem` and I want output in the file named `output.txt` setting the `program counter` FF and `stack pointer` to AF, I will run:
 
