@@ -93,10 +93,12 @@ int main(int argc, char *argv[])
     // Close output file
     mem_fstream.close();
     
-    //print mem image
+    //  Print Memory Image
     std::cout << "\n-----------Memory--------------" << std::endl;
     isa.print_mem();
     std::cout << "\n---------End Memory------------" << std::endl;
 
+    isa.start_execution();
+    
     return 0;
 }
