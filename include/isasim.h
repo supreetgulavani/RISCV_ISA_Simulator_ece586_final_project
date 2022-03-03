@@ -2,7 +2,6 @@
 #define __ISASIM_H__
 
 // just a file to initiate PC and SP
-
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -27,7 +26,6 @@ class isa_sim{
             std::cout << i << ":" << std::uppercase << std::hex << (int)memory_array[i] << "\t";
         }
     }
-
 
 };
 
