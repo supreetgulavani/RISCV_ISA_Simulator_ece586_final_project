@@ -65,12 +65,13 @@ void read_file(std::string ip_string, request& req)
         else {
             break;
         }
+    }
 
-        // Invalid input checking
-        if (token_count > 2) {
-            std::cerr << "Invalid input! - " << ip_string << std::endl;
-            exit(1);
-        }
+    // Invalid input checking
+    if (token_count != 2) {
+        token_valid = false;
+        std::cerr << "Invalid input! - " << ip_string << std::endl;
+        exit(1);
     }
 
     //Get the data into variables
