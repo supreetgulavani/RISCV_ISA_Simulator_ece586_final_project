@@ -60,3 +60,10 @@ info:
 	@echo "Sources:\t" $(SRCS)
 	@echo "Objects:\t" $(OBJS)
 	@echo "Dependencies:\t" $(DEPS)
+
+##define verbose
+#$(if $(V),$(info $(1)))
+#endef
+
+#$(call verbose,SRCS = $(SRCS))
+
