@@ -48,10 +48,16 @@ int main(int argc, char *argv[])
     isa.program_counter = std::strtoul(argv[3], nullptr, 16);
     std::cout << "Program Counter: " << std::uppercase << std::hex << isa.program_counter << std::endl;
 
-    // Take Stack Pointer as input
-    isa.stack_pointer = std::strtoul(argv[4], nullptr, 16);
+    // Take Stack Address as input
+    isa.stack_address = std::strtoul(argv[4], nullptr, 16);
+    std::cout << "Stack Address: " << std::uppercase << std::hex << isa.stack_address << std::endl;
+    
+    //output Stack Pointer
     std::cout << "Stack Pointer: " << std::uppercase << std::hex << isa.stack_pointer << std::endl;
- 
+
+    //Output Return Address
+    std::cout << "Return Address: " << std::uppercase << std::hex << isa.return_addr << std::endl;
+
     request req; 
     // Print starting message
     std::cout << "\n -- Starting Simulation -- \n" << std::endl;
@@ -77,7 +83,7 @@ int main(int argc, char *argv[])
             std::stringstream op;
     
             op  << req.instruction_location << " " << std::hex << req.instruction << " "<< std::uppercase << std::hex << isa.program_counter 
-                << std::uppercase << std::hex << " " << isa.stack_pointer << std::endl;
+                 << std::uppercase << std::hex << " " << isa.stack_address << std::uppercase << std::hex << " " << isa.stack_pointer << std::endl;
             //std::cout << op.str();
             // Add the parsed contents to a file  (showoff nothing else)
             mem_fstream << op.str();
@@ -93,12 +99,10 @@ int main(int argc, char *argv[])
     // Close output file
     mem_fstream.close();
     
-    //  Print Memory Image
+    //print mem image
     std::cout << "\n-----------Memory--------------" << std::endl;
     isa.print_mem();
     std::cout << "\n---------End Memory------------" << std::endl;
 
-    isa.start_execution();
-    
     return 0;
 }
