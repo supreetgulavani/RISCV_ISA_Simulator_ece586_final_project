@@ -6,7 +6,7 @@
 #include "commondefs.h"
 #include "fileparse.h"
 #include "isasim.h"
-
+#include "current_instr.h"
 
 void isa_sim::print_mem(){
     int mem_elements = 0;
