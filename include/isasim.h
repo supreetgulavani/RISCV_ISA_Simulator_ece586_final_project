@@ -31,6 +31,4 @@ class isa_sim{
 
 };
 
-
-
 #endif

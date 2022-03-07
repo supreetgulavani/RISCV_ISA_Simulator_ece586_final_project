@@ -26,7 +26,7 @@ void isa_sim::start_execution(){
         current_instr current(current_pc, current_sp);
         current.instr_execution(r);
         //update the pc and sp here
-        if (((int)current.c_instr == 0x00008067) && ((int)r[1] == 0x0))
+        if ((current.c_instr == 0x00008067) && (r[0x1] == 0x0))
             break;
         
         current_pc = current_pc + 4;

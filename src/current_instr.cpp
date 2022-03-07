@@ -9,26 +9,24 @@
 #include "isasim.h"
 #include "current_instr.h"
 
-/*
-isa_sim isa;
-uint32_t current_instr::get_rd_value(uint8_t rd){
-    if (rd == 0x0)
-        uint32_t rd_value = isa.r0;
-    else
-        uint32_t rd_value = isa.r [rd]; 
-};
 
-uint32_t current_instr::get_rs1_value(uint8_t rs1){
-};
+int32_t current_instr::get_signed_i_imm(uint32_t i_imm){
+    return((i_imm & 0xFFF) | ((i_imm & 0x800) ? 0xFFFFF000 : 0));
+}
 
-uint32_t current_instr::get_rs2_value(uint8_t rs2){
-};
-*/
+int32_t current_instr::get_signed_s_imm(uint32_t s_imm){
+    return((s_imm & 0xFFF) | ((s_imm & 0x800) ? 0xFFFFF000 : 0));
+}
 
+int32_t current_instr::get_signed_b_imm(uint32_t b_imm){
+    return((b_imm & 0x1FFF) | ((b_imm & 0x1000) ? 0xFFFFE000 : 0));
+}
+
+int32_t current_instr::get_signed_j_imm(uint32_t j_imm){
+    return((j_imm & 0x1FFFFF) | ((j_imm & 0x100000) ? 0xFFE00000 : 0));
+}
 
 void current_instr::instr_execution(uint32_t r[]){
-
-    //std::cout << "opcode: " << (int)opcode << std::endl; 
     
     switch (opcode){
     case r_type_opcode:
@@ -283,6 +281,14 @@ void current_instr::instr_execution(uint32_t r[]){
     case j_type_opcode: std::cout << "JAL instruction Detected" << std::endl;
     //Develop your JAL instr implementation here
     break;
+
+    case s_type_opcode: 
+        switch(funct3){
+        case sw_funct3: 
+            std::cout << "SW instruction Detected" << std::endl;
+            //r[rd] = ;
+            std::cout << "SW Result:\t" << std::hex << r[rd] << "\n" << std::endl;
+        }
     }
 
     std::cout << "Register values are:" << std::endl;

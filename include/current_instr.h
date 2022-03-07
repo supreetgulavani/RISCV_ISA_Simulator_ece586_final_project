@@ -32,14 +32,14 @@ class current_instr{
         j_imm = ((c_instr & (0x80000000)) >> 11) | (c_instr & (0xFF000)) | ((c_instr & (0x100000)) >> 9) | ((c_instr & (0x7FE00000)) >> 20) | 0x0;
     }
     
-    //Current instruction and sp and pc for the same  
+    // Current instruction and sp and pc for the same  
     uint64_t c_pc;
     uint64_t c_sp;
     uint32_t c_instr;
 
-    //Instruction field constants 
+    // Instruction field constants 
     uint8_t opcode;
-    //Opcode constants
+    // Opcode constants
     static constexpr uint8_t r_type_opcode = 0x33;
     static constexpr std::array<uint8_t, 4> i_type_opcode {0x13, 0x3, 0x73, 0x67};
     static constexpr uint8_t s_type_opcode = 0x23;
@@ -48,7 +48,7 @@ class current_instr{
     static constexpr uint8_t j_type_opcode = 0x6F;
 
     uint8_t funct7;
-    //Funct7 constants
+    // Funct7 constants
     static constexpr uint8_t add_funct7  = 0x00;
     static constexpr uint8_t xor_funct7  = 0x00;
     static constexpr uint8_t or_funct7   = 0x00;
@@ -57,27 +57,32 @@ class current_instr{
     static constexpr uint8_t srl_funct7  = 0x00;
     static constexpr uint8_t slt_funct7  = 0x00;
     static constexpr uint8_t sltu_funct7 = 0x00;
+    static constexpr uint8_t rv32m_funct7= 0x01;
     static constexpr uint8_t sub_funct7  = 0x20;
     static constexpr uint8_t sra_funct7  = 0x20;
 
     uint8_t funct3;
-    //Funct3 constants
+    // Funct3 constants
     static constexpr uint8_t add_funct3  = 0x0;
     static constexpr uint8_t addi_funct3 = 0x0;
     static constexpr uint8_t sub_funct3  = 0x0;
     static constexpr uint8_t beq_funct3  = 0x0;
     static constexpr uint8_t lb_funct3   = 0x0;
     static constexpr uint8_t jalr_funct3 = 0x0;
+    static constexpr uint8_t sb_funct3   = 0x0;
     static constexpr uint8_t ecall_ebreak_funct3 = 0x0;
     static constexpr uint8_t sll_funct3  = 0x1;
     static constexpr uint8_t slli_funct3 = 0x1;
     static constexpr uint8_t bne_funct3  = 0x1;
     static constexpr uint8_t lh_funct3   = 0x1;
+    static constexpr uint8_t sh_funct3   = 0x1;
     static constexpr uint8_t slt_funct3  = 0x2;
     static constexpr uint8_t slti_funct3 = 0x2;
     static constexpr uint8_t lw_funct3   = 0x2;
+    static constexpr uint8_t sw_funct3   = 0x2;
     static constexpr uint8_t sltu_funct3 = 0x3;
     static constexpr uint8_t sltiu_funct3= 0x3;
+    static constexpr uint8_t sd_funct3   = 0x3;
     static constexpr uint8_t xor_funct3  = 0x4;
     static constexpr uint8_t xori_funct3 = 0x4;
     static constexpr uint8_t blt_funct3  = 0x4;
@@ -94,12 +99,22 @@ class current_instr{
     static constexpr uint8_t andi_funct3 = 0x7;
     static constexpr uint8_t bgeu_funct3 = 0x7;
 
-    //Register decoding
+    // RV32M Extra Credit Implementation
+    static constexpr uint8_t mul_funct3    = 0x0;
+    static constexpr uint8_t mulh_funct3   = 0x1;
+    static constexpr uint8_t mulhu_funct3  = 0x2;
+    static constexpr uint8_t mulhsu_funct3 = 0x3;
+    static constexpr uint8_t div_funct3    = 0x4;
+    static constexpr uint8_t divu_funct3   = 0x5;
+    static constexpr uint8_t rem_funct3    = 0x6;
+    static constexpr uint8_t remu_funct3   = 0x7;
+
+    // Register decoding
     uint8_t rd;
     uint8_t rs1;
     uint8_t rs2;
 
-    //Immediate values masking and decoding for each type of instr
+    // Immediate values masking and decoding for each type of instr
     uint16_t i_imm;
     uint16_t s_imm;
     uint16_t b_imm;
@@ -113,6 +128,12 @@ class current_instr{
     uint32_t get_rd_value(uint32_t r[]);
     uint32_t get_rs1_value(uint32_t r[]);
     uint32_t get_rs2_value(uint8_t rs2);
+
+    // Get Signed Values of imm fields
+    int32_t get_signed_i_imm(uint32_t i_imm);
+    int32_t get_signed_s_imm(uint32_t s_imm);
+    int32_t get_signed_b_imm(uint32_t b_imm);
+    int32_t get_signed_j_imm(uint32_t j_imm);
 
     // Instruction Execution logic
     void instr_execution(uint32_t r[]);
