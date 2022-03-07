@@ -6,6 +6,8 @@
 #include "commondefs.h"
 #include "fileparse.h"
 #include "isasim.h"
+#include "current_instr.h"
+#include "request.h"    
 
 int main(int argc, char *argv[])
 {
@@ -19,6 +21,7 @@ int main(int argc, char *argv[])
     std::string op_fname;
 
     isa_sim isa;
+    
 
     // Check if input trace file is provided
     // First argument is always executable name
@@ -82,8 +85,8 @@ int main(int argc, char *argv[])
             std::cout  << req << std::endl;
             std::stringstream op;
     
-            op  << req.instruction_location << " " << std::hex << req.instruction << " "<< std::uppercase << std::hex << isa.program_counter 
-                 << std::uppercase << std::hex << " " << isa.stack_address << std::uppercase << std::hex << " " << isa.stack_pointer << std::endl;
+            op  << "Instruction Location:" << req.instruction_location << "\tInstruction:" << std::hex << req.instruction << "\tProgram Counter:"<< std::uppercase << std::hex << isa.program_counter 
+                 << std::uppercase << std::hex << "\tStack Address:" << isa.stack_address << std::uppercase << std::hex << "\tStack Pointer:" << isa.stack_pointer << std::endl;
             //std::cout << op.str();
             // Add the parsed contents to a file  (showoff nothing else)
             mem_fstream << op.str();
@@ -104,5 +107,6 @@ int main(int argc, char *argv[])
     isa.print_mem();
     std::cout << "\n---------End Memory------------" << std::endl;
 
+    isa.start_execution();
     return 0;
 }
