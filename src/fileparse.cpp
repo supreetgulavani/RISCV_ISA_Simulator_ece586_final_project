@@ -82,8 +82,4 @@ void read_file(std::string ip_string, request& req)
         req.valid = false;
     }
 
-    // Print out to debug
-    #ifdef DEBUG
-
-    #endif
 }
