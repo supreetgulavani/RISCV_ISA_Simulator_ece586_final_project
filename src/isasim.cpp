@@ -31,4 +31,13 @@ void isa_sim::start_execution(){
         
         current_pc = current_pc + 4;
     }
+    if (debug){
+        std::cout << "Register values are:" << std::endl;
+        int reg_elements = 0;
+        for (int i = reg_elements; i <= 31; i++){
+            std::cout << i << ":" << std::uppercase << std::hex << r[i] << "\t";
+        }
+    std::cout << "\nProgram Counter:" << std:: uppercase << std::hex << current_pc << "\n" << std::endl;
+    }
 }
+
