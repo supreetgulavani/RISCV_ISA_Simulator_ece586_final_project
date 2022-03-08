@@ -3,6 +3,9 @@
 
 #include <ostream>
 
+extern bool verbose;
+extern bool debug;
+
 struct nxt_instr_struct {
     uint64_t program_counter;
     uint64_t stack_pointer;
