@@ -7,7 +7,10 @@
 #include "fileparse.h"
 #include "isasim.h"
 #include "current_instr.h"
-#include "request.h"    
+#include "request.h"  
+
+bool verbose;
+bool debug;
 
 int main(int argc, char *argv[])
 {
@@ -25,9 +28,9 @@ int main(int argc, char *argv[])
 
     // Check if input trace file is provided
     // First argument is always executable name
-    if (argc < 5) {
+    if (argc < 7) {
         std::cerr << "Wrong command..\n\n";
-        std::cerr << "Usage: ./ece586_isa_simulator <input_mem_file> <output_mem_file> <program_counter> <stack_pointer>" << std::endl;
+        std::cerr << "Usage: ./ece586_isa_simulator <input_mem_file> <output_mem_file> <program_counter> <stack_address> <verbose_mode> <debug_mode>" << std::endl;
         return 1;
     }
 
@@ -54,6 +57,14 @@ int main(int argc, char *argv[])
     // Take Stack Address as input
     isa.stack_address = std::strtoul(argv[4], nullptr, 16);
     std::cout << "Stack Address: " << std::uppercase << std::hex << isa.stack_address << std::endl;
+
+    // Verbose Mode (Needed for demo)
+    verbose = atoi(argv[5]);
+    
+    // Debug Mode (Extra prints for development)
+    debug = atoi(argv[6]);
+
+    std::cout << "Verbose Mode: " << verbose << " Debug Mode: " << debug << std::endl;
     
     //output Stack Pointer
     std::cout << "Stack Pointer: " << std::uppercase << std::hex << isa.stack_pointer << std::endl;
@@ -102,10 +113,12 @@ int main(int argc, char *argv[])
     // Close output file
     mem_fstream.close();
     
+    if (debug || verbose){
     //print mem image
     std::cout << "\n-----------Memory--------------" << std::endl;
     isa.print_mem();
     std::cout << "\n---------End Memory------------" << std::endl;
+    }
 
     isa.start_execution();
     return 0;
