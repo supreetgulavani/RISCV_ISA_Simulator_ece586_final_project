@@ -57,9 +57,11 @@ class current_instr{
     static constexpr uint8_t srl_funct7  = 0x00;
     static constexpr uint8_t slt_funct7  = 0x00;
     static constexpr uint8_t sltu_funct7 = 0x00;
+    static constexpr uint8_t srli_funct7 = 0x00;
     static constexpr uint8_t rv32m_funct7= 0x01;
     static constexpr uint8_t sub_funct7  = 0x20;
     static constexpr uint8_t sra_funct7  = 0x20;
+    static constexpr uint8_t srai_funct7 = 0x20;
 
     uint8_t funct3;
     // Funct3 constants
@@ -138,6 +140,7 @@ class current_instr{
     // Instruction Execution logic
     void instr_execution(uint32_t r[]);
 
+    // print func
+    void print_instr(std::string str);
 };
-
 #endif
