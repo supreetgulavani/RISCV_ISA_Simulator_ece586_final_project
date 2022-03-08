@@ -14,6 +14,6 @@
 
     ```$ ./ece586_isa_simulator <input_mem_file> <output_mem_file> <program_counter> <stack_address>```
 
-- For example, my input mem file is `input.mem` and I want output in the file named `output.txt` setting the `program counter` 0 and `stack address` to 65535, I will run:
+- For example, my input mem file is `input.mem` and I want output in the file named `output.txt` setting the `program counter` `0` and `stack address` to `65535`, I will run:
 
-    ```$ ./ece586_isa_simulator input.mem output.txt FF AF ```
+    ```$ ./ece586_isa_simulator input.mem output.txt 0 65535 ```
