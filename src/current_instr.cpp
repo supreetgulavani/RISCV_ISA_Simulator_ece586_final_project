@@ -26,6 +26,13 @@ int32_t current_instr::get_signed_j_imm(uint32_t j_imm){
     return((j_imm & 0x1FFFFF) | ((j_imm & 0x100000) ? 0xFFE00000 : 0));
 }
 
+void current_instr::print_instr(std::string str) {
+    if (verbose){
+        std::cout << str << std::endl;
+    }
+}
+
+
 void current_instr::instr_execution(uint32_t r[]){
     
     switch (opcode){
@@ -35,57 +42,51 @@ void current_instr::instr_execution(uint32_t r[]){
             switch(funct3) {
                 //ADD: Addition
                 case add_funct3: 
-                                std::cout << "ADD instruction Detected" << std::endl;
+                                print_instr("ADD Instruction Detected");
                                 r[rd] = (int)r[rs1] + (int)r[rs2];
-                                std::cout << "ADD Result:" << std::hex << r[rd] << "\n" << std::endl;
                 break;
 
                 //XOR
-                case xor_funct3: std::cout << "XOR instruction Detected" << std::endl;
+                case xor_funct3: 
+                                print_instr("XOR Instruction Detected");
                                 r[rd] = r[rs1] ^ r[rs2];
-                                std::cout << "XOR Result:" << std::hex << r[rd] << "\n" <<  std::endl;
                 break;
 
                 //OR
                 case or_funct3: 
-                                std::cout << "OR instruction Detected" << std::endl;
+                                print_instr("OR Instruction Detected");
                                 r[rd] = r[rs1] | r[rs2];
-                                std::cout << "OR Result:" << std::hex << r[rd] << "\n" << std::endl;
                 break;
 
                 //AND 
-                case and_funct3: std::cout << "AND instruction Detected" << std::endl;
+                case and_funct3: 
+                                print_instr("AND Instruction Detected");
                                 r[rd] = r[rs1] & r[rs2];
-                                std::cout << "AND Result:" << std::hex << r[rd] << "\n" << std::endl;
                 break;
                 
                 //SLL : Shift Logical Left
                 case sll_funct3: 
-                                std::cout << "SLL instruction Detected" << std::endl;
-                                r[rd] = r[rs1]  << r[rs2];      
-                                std::cout << "Shift Logical Left Result:" << std:: hex << r[rd] << "\n" << std::endl;          
+                                print_instr("SLL Instruction Detected");
+                                r[rd] = r[rs1]  << r[rs2];           
                             
                 break;
 
                 //SRL : Shift Logical Right
                 case srl_funct3: 
-                                std::cout << "SRL instruction Detected" << std::endl;
-                                r[rd] = r[rs1] >> r[rs2];      
-                                std::cout << "Shift Logical Right Result: " << std:: hex << r[rd] << "\n" << std::endl;     
+                                print_instr("SRL Instruction Detected");
+                                r[rd] = r[rs1] >> r[rs2];          
                 break;
 
                 //SLT : Set Less Than
                 case slt_funct3: 
-                                std::cout << "SLT instruction Detected" << std::endl;
+                                print_instr("SLT Instruction Detected");
                                 r[rd] =  (int)r[rs1] < (int)r[rs2] ? 1 : 0;
-                                std::cout << "SLT Result:\t" << std::hex << r[rd] << "\n" << std::endl;
                 break;
 
                 //SLTU : Set Less Than Unsigned
                 case sltu_funct3: 
-                                std::cout << "SLTU instruction Detected" << std::endl;
-                                r[rd] =  (unsigned)r[rs1] < (unsigned)r[rs2] ? 1 : 0;
-                                std::cout << "SLTU Result:\t" << std::hex << r[rd] << "\n" << std::endl;    
+                                print_instr("SLTU Instruction Detected");
+                                r[rd] =  (unsigned)r[rs1] < (unsigned)r[rs2] ? 1 : 0;  
                 break;
             }
         break;
@@ -94,16 +95,14 @@ void current_instr::instr_execution(uint32_t r[]){
             switch(funct3) {
                 //SUB : Subtraction
                 case sub_funct3: 
-                                std::cout << "SUB instruction Detected" << std::endl;
+                                print_instr("SUB Instruction Detected");
 
                 break;
                 
                 //SRA : Shift Right Arithmetic
                 case sra_funct3: 
-                                std::cout << "SRA instruction Detected" << std::endl;
-                                //r[rd] = r[rs1] >> r[rs2];   
-                                r[rd] = r[rs1] < 0 ? ~(~r[rs1] >> r[rs2]) : r[rs1] >> r[rs2];
-                                std::cout << "Shift Arithmetic Right  Result:" << std:: hex << r[rd] << "\n" << std::endl;
+                                print_instr("SRA Instruction Detected");
+                                r[rd] = ((int)r[rs1] ^ 0x0) >> (int)r[rs2];
                 break;
             }
         break;
@@ -114,59 +113,59 @@ void current_instr::instr_execution(uint32_t r[]){
         switch(funct3){
             //ADDI : Addition Immediate
             case addi_funct3: 
-                            std::cout << "\nADDI instruction Detected" << std::endl;
-                            r[rd] = r[rs1] + ((i_imm & 0xFFF) | ((i_imm & 0x800) ? 0xFFFFF000 : 0));
-                            std::cout << "ADDI Result:\t" << std:: hex << (int32_t)r[rd] << std::endl;
+                            print_instr("ADDI Instruction Detected");
+                            r[rd] = r[rs1] + get_signed_i_imm(i_imm);
             break;
 
             //XORI (Immediate) 
             case xori_funct3: 
-                            std::cout << "XOR1 instruction Detected" << std::endl;
+                            print_instr("XORI Instruction Detected");
                             r[rd] = r[rs1] ^ i_imm;
-                            std::cout << "XORI Result:" << std::hex << r[rd] <<  (unsigned)i_imm << "\n" << std::endl;
             break;
 
             //ORI (Immediate) 
             case ori_funct3: 
-                            std::cout << "ORI instruction Detected" << std::endl;
+                            print_instr("ORI Instruction Detected");
                             r[rd] = r[rs1] | i_imm;
-                            std::cout << "ORI Result:" << std::hex << r[rd] <<  (unsigned)i_imm << "\n" << std::endl;
             break;
 
             //ANDI (Immediate) 
             case andi_funct3: 
-                            std::cout << "ANDI instruction Detected" << std::endl;
+                            print_instr("ANDI Instruction Detected");
                             r[rd] = r[rs1] & i_imm;
-                            std::cout << "ANDI Result:" << std::hex << r[rd] << "\n" << std::endl;
             break;
 
             //SLLI : Shift Logical Left Immediate
             case slli_funct3: 
-                            std::cout << "SLLI instruction Detected" << std::endl;
+                            print_instr("SLLI Instruction Detected");
                             r[rd] = r[rs1] << r[i_imm];      
-                            std::cout << "Shift Logical Left Immediate  Result:" << std:: hex << r[rd] << "\n" << std::endl;  
             break;
 
-            //write one for srai
+            //write one for srai: they are different
             case srli_srai_funct3: 
-                            std::cout << "SRLI/SRAI instruction Detected" << std::endl;
-                            r[rd] = r[rs1] >> r[i_imm];      
-                            std::cout << "Shift Logical Right Immediate  Result:" << std:: hex << r[rd] << "\n" << std::endl;
+                    switch(funct7){
+                        case srai_funct7:
+                                        print_instr("SRAI Instruction Detected");
+                                        r[rd] = ((int)r[rs1] ^ 0x0) >> i_imm;  
+                        break;
+                        case srli_funct7:
+                                        print_instr("SRLI Instruction Detected");
+                                        r[rd] = r[rs1] >> i_imm;   
+                        break;
+                    }
+                       
             break;
 
             //SLTI : Set Less Than Immediate
             case slti_funct3: 
-                            std::cout << "SLTI instruction Detected" << std::endl;
+                            print_instr("SLTI Instruction Detected");
                             r[rd] =  (int)r[rs1] < (int)i_imm ? 1 : 0;
-                            std::cout << "SLTI Result:\t" << std::hex << r[rd] << "\n" << std::endl;
             break;
 
             //SLTIU : Set Less Than Immediate Unsigned
             case sltiu_funct3: 
-                            std::cout << "SLTIU instruction Detected" << std::endl;
-                            std::cout << "SLTIU instruction Detected" << std::endl;
-                            r[rd] =  (unsigned)r[rs1] < (unsigned)i_imm ? 1 : 0;
-                            std::cout << "SLTIU Result:\t" << std::hex << r[rd] << "\n" << std::endl;  
+                            print_instr("SLTIU Instruction Detected");
+                            r[rd] =  (unsigned)r[rs1] < (unsigned)i_imm ? 1 : 0;  
             break;
         }
     break;
@@ -174,28 +173,33 @@ void current_instr::instr_execution(uint32_t r[]){
     case 0x3:  // i type 0x3
         switch(funct3){
             //LB : Load Byte
-            case lb_funct3: std::cout << "LB instruction Detected" << std::endl;
-            //Develop your LB instr implementation here
+            case lb_funct3: 
+                            print_instr("LB Instruction Detected");
+                             //Develop your LB instr implementation here
             break;
 
             //LH : Load Halfword
-            case lh_funct3: std::cout << "LH instruction Detected" << std::endl;
-        //Develop your LH instr implementation here
+            case lh_funct3: 
+                            print_instr("LH Instruction Detected");
+                            //Develop your LH instr implementation here
             break;
 
             //LW : Load Word
-            case lw_funct3: std::cout << "LW instruction Detected" << std::endl;
-        //Develop your LW instr implementation here
+            case lw_funct3: 
+                           print_instr("LW Instruction Detected");
+                           //Develop your LW instr implementation here
             break;
 
             //LBU : Load Byte Unsigned
-            case lbu_funct3: std::cout << "LBU instruction Detected" << std::endl;
-        //Develop your LBU instr implementation here
+            case lbu_funct3: 
+                            print_instr("LBU Instruction Detected");
+                            //Develop your LBU instr implementation here
             break;
 
             //LHU : Load Half Unsigned
-            case lhu_funct3: std::cout << "LHU instruction Detected" << std::endl;
-        //Develop your LHU instr implementation here
+            case lhu_funct3: 
+                            print_instr("LHU Instruction Detected");
+                            //Develop your LHU instr implementation here
             break;
         }
     break;
@@ -203,8 +207,9 @@ void current_instr::instr_execution(uint32_t r[]){
     case 0x67:  // i type 0x67
         switch(funct3){
             //JALR : Jump & Link Register
-            case jalr_funct3: std::cout << "JALR instruction Detected" << std::endl;
-        //Develop your LB instr implementation here
+            case jalr_funct3: 
+                            print_instr("JALR Instruction Detected");
+                            //Develop your LB instr implementation here
             break;
             }
     break;
@@ -214,12 +219,14 @@ void current_instr::instr_execution(uint32_t r[]){
             //ECALL and EBREAK : 
             case ecall_ebreak_funct3: 
                 switch(i_imm){
-                case 0x0: std::cout << "ECALL instruction Detected" << std::endl;
-            //Develop your ECALL instr implementation here
+                case 0x0: 
+                            print_instr("ECALL Instruction Detected");
+                            //Develop your ECALL instr implementation here
                 break;
 
-                case 0x1: std::cout << "EBREAK instruction Detected" << std::endl;
-            //Develop your EBREAK instr implementation here
+                case 0x1: 
+                            print_instr("EBREAK Instruction Detected");
+                            //Develop your EBREAK instr implementation here
                 break;
             }
             break;    
@@ -231,71 +238,78 @@ void current_instr::instr_execution(uint32_t r[]){
         switch(funct3){
             //BEQ : Branch if Equal
             case beq_funct3: 
-                          std::cout << "BEQ instruction Detected" << std::endl;
+                          print_instr("BEQ Instruction Detected");
                             if(r[rs1] == r[rs2])
                                 c_pc = u_imm;
             break;
 
             //BNE : Branch if Not Equal
-            case bne_funct3: std::cout << "BNE instruction Detected" << std::endl;
-        //Develop your BNE instr implementation here
+            case bne_funct3: 
+                            print_instr("BNE Instruction Detected");
+                            //Develop your BNE instr implementation here
             break;
 
             //BLT : Branch if Less Than
-            case blt_funct3: std::cout << "BLT instruction Detected" << std::endl;
-        //Develop your BLT instr implementation here
+            case blt_funct3: 
+                            print_instr("BLT Instruction Detected");
+                            //Develop your BLT instr implementation here
             break;
 
             //BGE : Branch if Greater than or Equal 
-            case bge_funct3: std::cout << "BGE instruction Detected" << std::endl;
-        //Develop your BGE instr implementation here
+            case bge_funct3: 
+                           print_instr("BGE Instruction Detected");
+                           //Develop your BGE instr implementation here
             break;
         
             //BLTU : Branch if Less Than Unsigned
-            case bltu_funct3: std::cout << "BLTU instruction Detected" << std::endl;
-        //Develop your BLTU instr implementation here
+            case bltu_funct3: 
+                            print_instr("BLTU Instruction Detected");
+                            //Develop your BLTU instr implementation here
             break;
         
             //BGE : Branch if Greater than or Equal Unsigned
-            case bgeu_funct3: std::cout << "BGEU instruction Detected" << std::endl;
-        //Develop your BGEU instr implementation here
+            case bgeu_funct3: 
+                            print_instr("BGEU Instruction Detected");
+                            //Develop your BGEU instr implementation here
             break;
         }
     break;
 
     //LUI: Load Upper Immediate 
     case 0x37: 
-                std::cout << "LUI instruction Detected" << std::endl;
+                print_instr("LUI Instruction Detected");
                 r[rd] = u_imm;
-                std::cout << "LUI Result:\t" << std::hex << r[rd] << "\n" << std::endl;
     break;
 
     //AUIPC: Add Upper Immediate to PC
     case 0x17: 
-                std::cout << "AUIPC instruction Detected" << std::endl;
-                r[rd] = c_pc + u_imm;           //20 and lower 12 zero
-                std::cout << "AUIPC Result:\t" << std::hex << r[rd] << "\n" << std::endl;
+                print_instr("AUIPC Instruction Detected");
+                r[rd] = c_pc + u_imm;           //20 and lower 12 zero: check this instr again
     break;
 
     //JAL : Jump and Link
-    case j_type_opcode: std::cout << "JAL instruction Detected" << std::endl;
-    //Develop your JAL instr implementation here
+    case j_type_opcode: 
+                       print_instr("JAL Instruction Detected");
+                       //Develop your JAL instr implementation here
     break;
 
     case s_type_opcode: 
         switch(funct3){
         case sw_funct3: 
-            std::cout << "SW instruction Detected" << std::endl;
-            //r[rd] = ;
-            std::cout << "SW Result:\t" << std::hex << r[rd] << "\n" << std::endl;
+                        print_instr("SW Instruction Detected");
+                        //r[rd] = ;
         }
     }
 
-    std::cout << "Register values are:" << std::endl;
-    int reg_elements = 0;
-    for (int i = reg_elements; i <= 31; i++){
-        std::cout << i << ":" << std::uppercase << std::hex << r[i] << "\t";
-    }
-    std::cout << "\n" << std::endl;
+    if (verbose){
+        std::cout << "Result:\t" << std::hex << r[rd] << "\n" << std::endl;
+        std::cout << "Register values are:" << std::endl;
+        int reg_elements = 0;
+        for (int i = reg_elements; i <= 31; i++){
+            std::cout << i << ":" << std::uppercase << std::hex << r[i] << "\t";
+        }
+        std::cout << "\nProgram Counter:" << std:: uppercase << std::hex << c_pc << "\n" << std::endl;
+    }    
 
 }
+
