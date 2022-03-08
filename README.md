@@ -14,8 +14,9 @@
 - You should now have the executable named `ece586_isa_simulator` in the top directory.
 - Run it as follows:
 
-    ```$ ./ece586_isa_simulator <input_mem_file> <output_mem_file> <program_counter> <stack_address>```
+    ```$ ./ece586_isa_simulator <input_mem_file> <output_mem_file> <program_counter> <stack_address> <verbose_mode> <debug_mode>```
 
-- For example, my input mem file is `input.mem` and I want output in the file named `output.txt` setting the `program counter` `0` and `stack address` to `65535`, I will run:
-
-    ```$ ./ece586_isa_simulator input.mem output.txt 0 65535 ```
+- For example, input mem file is `input.mem` and output in the file named `output.txt` setting the `program counter` `0` and `stack address` to `65535`. 
+  Select `verbose mode` by adding  `1` or `0` . Select `debug mode` by adding  `1` or `0`
+  
+    ```$ ./ece586_isa_simulator input.mem output.txt 0 65535 1 0 ```
