@@ -8,6 +8,8 @@
     `make debug` : Build with debug info printed to console
 
     `make release` : Build without debug info printed to the console
+    
+    `make clean`   : Build gets cleaned i.e rm -rf
 
 - You should now have the executable named `ece586_isa_simulator` in the top directory.
 - Run it as follows:
