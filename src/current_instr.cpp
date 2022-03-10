@@ -240,37 +240,43 @@ void current_instr::instr_execution(uint32_t r[]){
             case beq_funct3: 
                           print_instr("BEQ Instruction Detected");
                             if(r[rs1] == r[rs2])
-                                c_pc = u_imm;
+                                c_pc = c_pc + b_imm ;
             break;
 
             //BNE : Branch if Not Equal
             case bne_funct3: 
                             print_instr("BNE Instruction Detected");
-                            //Develop your BNE instr implementation here
+                           if(r[rs1] != r[rs2])
+                                 c_pc = c_pc + b_imm ;
+
             break;
 
             //BLT : Branch if Less Than
             case blt_funct3: 
                             print_instr("BLT Instruction Detected");
-                            //Develop your BLT instr implementation here
+                            if(r[rs1] < r[rs2])
+                                c_pc = c_pc + b_imm ;
             break;
 
             //BGE : Branch if Greater than or Equal 
             case bge_funct3: 
                            print_instr("BGE Instruction Detected");
-                           //Develop your BGE instr implementation here
+                            if(r[rs1] > r[rs2])
+                                c_pc = c_pc + b_imm ;
             break;
         
             //BLTU : Branch if Less Than Unsigned
             case bltu_funct3: 
                             print_instr("BLTU Instruction Detected");
-                            //Develop your BLTU instr implementation here
+                        if((unsigned)r[rs1] >= (unsigned)r[rs2])
+                            c_pc = c_pc + b_imm ;
             break;
         
             //BGE : Branch if Greater than or Equal Unsigned
             case bgeu_funct3: 
                             print_instr("BGEU Instruction Detected");
-                            //Develop your BGEU instr implementation here
+                            if(r[rs1] >= r[rs2])
+                                c_pc = c_pc + b_imm ;
             break;
         }
     break;
