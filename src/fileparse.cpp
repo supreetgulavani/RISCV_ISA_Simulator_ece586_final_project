@@ -6,11 +6,13 @@
 #include "commondefs.h"
 #include "fileparse.h"
 #include "request.h"
+#include "isasim.h"
 
 /*
  * Parses the input trace string
  * Prints to debug console if built in debug mode
  */
+
 
 void read_file(std::string ip_string, request& req)
 {
@@ -75,12 +77,9 @@ void read_file(std::string ip_string, request& req)
     if (token_valid == true) {
         req.instruction_location = std::stoi(tokens[0], nullptr, 16); 
         req.instruction = std::stoull(tokens[1], nullptr, 16);
+        req.load_mem(req);
     } else {
         req.valid = false;
     }
 
-    // Print out to debug
-    #ifdef DEBUG
-
-    #endif
 }

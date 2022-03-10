@@ -22,7 +22,7 @@ DEPS	:= $(OBJS:.o=.d)
 
 # Compiler
 CXX			= g++
-CXXFLAGS 	= -Wall -Werror -std=c++11
+CXXFLAGS 	=  -Wall  -std=c++11
 
 # Build Recipies
 all: build $(TARGET)
@@ -60,3 +60,10 @@ info:
 	@echo "Sources:\t" $(SRCS)
 	@echo "Objects:\t" $(OBJS)
 	@echo "Dependencies:\t" $(DEPS)
+
+##define verbose
+#$(if $(V),$(info $(1)))
+#endef
+
+#$(call verbose,SRCS = $(SRCS))
+
