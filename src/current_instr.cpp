@@ -303,15 +303,17 @@ void current_instr::instr_execution(uint32_t r[]){
         switch(funct3){
         case sw_funct3: 
                         print_instr("SW Instruction Detected");
-                        //r[rd] = ;
+                        ((memory_array[r[rs1] + s_imm + 3]) << 24) | ((memory_array[r[rs1] + s_imm + 2]) << 16) | ((memory_array[r[rs1] + s_imm + 1]) << 8) | (memory_array[r[rs1] + s_imm]) = r[rs2] ;
         break;
 
         case sb_funct3: 
                         print_instr("SB Instruction Detected");
+                        ((memory_array[r[rs1] + s_imm + 1]) << 8) | (memory_array[r[rs1] + s_imm]) = r[rs2] ;
         break;
 
         case sh_funct3: 
                         print_instr("SH Instruction Detected");
+                        memory_array[r[rs1] + s_imm] = r[rs2] 
         break;
         }
     break;
