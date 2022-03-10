@@ -90,7 +90,7 @@ void current_instr::instr_execution(uint32_t r[]){
                 break;
             }
         break;
-
+		
         case 0x20:
             switch(funct3) {
                 //SUB : Subtraction
