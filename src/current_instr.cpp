@@ -240,14 +240,14 @@ void current_instr::instr_execution(uint32_t r[]){
             case beq_funct3: 
                           print_instr("BEQ Instruction Detected");
                             if(r[rs1] == r[rs2])
-                                c_pc = c_pc + b_imm ;
+                                c_pc = c_pc + b_imm;
             break;
 
             //BNE : Branch if Not Equal
             case bne_funct3: 
                             print_instr("BNE Instruction Detected");
                            if(r[rs1] != r[rs2])
-                                 c_pc = c_pc + b_imm ;
+                                 c_pc = c_pc + b_imm;
 
             break;
 
@@ -255,28 +255,28 @@ void current_instr::instr_execution(uint32_t r[]){
             case blt_funct3: 
                             print_instr("BLT Instruction Detected");
                             if(r[rs1] < r[rs2])
-                                c_pc = c_pc + b_imm ;
+                                c_pc = c_pc + b_imm;
             break;
 
             //BGE : Branch if Greater than or Equal 
             case bge_funct3: 
                            print_instr("BGE Instruction Detected");
                             if(r[rs1] > r[rs2])
-                                c_pc = c_pc + b_imm ;
+                                c_pc = c_pc + b_imm;
             break;
         
             //BLTU : Branch if Less Than Unsigned
             case bltu_funct3: 
                             print_instr("BLTU Instruction Detected");
                         if((unsigned)r[rs1] >= (unsigned)r[rs2])
-                            c_pc = c_pc + b_imm ;
+                            c_pc = c_pc + b_imm;
             break;
         
             //BGE : Branch if Greater than or Equal Unsigned
             case bgeu_funct3: 
                             print_instr("BGEU Instruction Detected");
                             if(r[rs1] >= r[rs2])
-                                c_pc = c_pc + b_imm ;
+                                c_pc = c_pc + b_imm;
             break;
         }
     break;
