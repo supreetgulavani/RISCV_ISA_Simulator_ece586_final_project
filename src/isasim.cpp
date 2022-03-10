@@ -28,8 +28,6 @@ void isa_sim::start_execution(){
         //update the pc and sp here
         if ((current.c_instr == 0x00008067) && (r[0x1] == 0x0))
             break;
-        
-        current_pc = current_pc + 4;
     }
     if (debug){
         std::cout << "Register values are:" << std::endl;
