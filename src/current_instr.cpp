@@ -304,7 +304,17 @@ void current_instr::instr_execution(uint32_t r[]){
         case sw_funct3: 
                         print_instr("SW Instruction Detected");
                         //r[rd] = ;
+        break;
+
+        case sb_funct3: 
+                        print_instr("SB Instruction Detected");
+        break;
+
+        case sh_funct3: 
+                        print_instr("SH Instruction Detected");
+        break;
         }
+    break;
     }
 
     if (verbose){
