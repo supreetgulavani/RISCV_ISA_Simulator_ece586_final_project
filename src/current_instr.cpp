@@ -285,12 +285,7 @@ void current_instr::instr_execution(uint32_t r[]){
                           print_instr("BEQ Instruction Detected");
                             if (r[rs1] == r[rs2]){
                                 c_pc += b_imm;
-                                std:: cout << "yay" << std::endl;
                                 pc_changed = true;
-                            }
-                            else {
-                                c_pc = c_pc;   
-                                std:: cout << "notyay" << std::endl;
                             }
             break;
 
