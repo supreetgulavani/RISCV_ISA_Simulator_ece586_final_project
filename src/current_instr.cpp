@@ -104,7 +104,7 @@ void current_instr::instr_execution(uint32_t r[]){
                                 print_instr("SRA Instruction Detected");
                                 r[rd] = ((int)r[rs1] ^ 0x0) >> (int)r[rs2];
                 break;
-            }
+            }   
         break;
         }
     break;
@@ -173,36 +173,77 @@ void current_instr::instr_execution(uint32_t r[]){
     case 0x3:  // i type 0x3
         switch(funct3){
             //LB : Load Byte
-            case lb_funct3: 
-                            print_instr("LB Instruction Detected");
-                             //Develop your LB instr implementation here
+            //LB : Load Byte
+            case lb_funct3:
+						 std::cout << "LB instruction Detected" << std::endl;
+                         lb = (memory_array[r[rs1] + i_imm]); //loading offset i.e immediate value added with are base address into destination
+						 r[rd] = (lb & 0x8000) ? (lb | 0xFFFF0000) : (lb & 0x0000FFFF); 
+						 std::cout << "Load Byte Result:" << std:: hex << r[rd] << "\n" << std::endl;
             break;
 
             //LH : Load Halfword
             case lh_funct3: 
-                            print_instr("LH Instruction Detected");
-                            //Develop your LH instr implementation here
+						 std::cout << "LH instruction Detected" << std::endl; //need  to define lh, Lower8, Upper8
+						 if ((i_imm + r[rs1]) & 0x00000001))
+						 {
+							cout<<"The addresses are not alligned";
+						 }
+						 else
+						 {
+						 Lower8 = memory_array[i_imm + r[rs1]];
+						 Upper8 = memory_array[i_imm + r[rs1] + 1];
+						 lh = (Upper8<<8)||(Lower8);
+						 r[rd] = (lh & 0x8000) ? (lh | 0xFFFF0000) : (lh & 0x0000FFFF);
+						 }
+				
+						 std::cout << "Load HalfWord Result:" << std:: hex << r[rd] << "\n" << std::endl;
             break;
 
-            //LW : Load Word
-            case lw_funct3: 
-                           print_instr("LW Instruction Detected");
-                           //Develop your LW instr implementation here
+            //LW : Load Word (32 bit will be loaded)
+            case lw_funct3:
+						 std::cout << "LW instruction Detected" << std::endl;
+						 if ((i_imm + r[rs1]) & 0x00000002)
+						 {
+							cout<<"The addresses are not alligned";
+						 }
+						 else
+						 {
+						 Lower8_0 = memory_array[i_imm + r[rs1]];
+						 Lower16_8 = memory_array[i_imm + r[rs1] + 1];
+						 Lower24_16 = memory_array[i_imm + r[rs1] + 2];
+						 Upper32_24 = memory_array[i_imm + r[rs1] + 3]; 
+						 r[rd] = (Upper32_24<<24)|(Lower24_16<<16)|(Lower16_8<<8)|(Lower8_0) ;
+						 }
+						 std::cout << "Load Word Result:" << std:: hex << r[rd] << "\n" << std::endl;
             break;
 
             //LBU : Load Byte Unsigned
             case lbu_funct3: 
-                            print_instr("LBU Instruction Detected");
-                            //Develop your LBU instr implementation here
+						  std::cout << "LBU instruction Detected" << std::endl;
+						  r[rd] = (memory_array[r[rs1] + i_imm])|(0x00000000);
+                          std::cout << "Load Byte Unisgned Result:" << std:: hex << r[rd] << "\n" << std::endl;
             break;
 
             //LHU : Load Half Unsigned
             case lhu_funct3: 
-                            print_instr("LHU Instruction Detected");
-                            //Develop your LHU instr implementation here
+						  std::cout << "LHU instruction Detected" << std::endl;
+						  if ((i_imm + r[rs1]) & 0x00000001)
+						 {
+							cout<<"The addresses are not alligned";
+						 } //check alignment
+						 else
+						 {
+						  Lower8 = memory_array[i_imm + r[rs1]];
+						  Upper8 = memory_array[i_imm + r[rs1] + 1];
+						  lh = (Upper8<<8)||(Lower8);
+						  r[rd] = lh & 0x0000FFFF;
+						 }
+						  std::cout << "LHU Result:" << std:: hex << r[rd] << "\n" << std::endl;
+        
             break;
         }
     break;
+
 
     case 0x67:  // i type 0x67
         switch(funct3){
@@ -313,7 +354,7 @@ void current_instr::instr_execution(uint32_t r[]){
 
         case sh_funct3: 
                         print_instr("SH Instruction Detected");
-                        memory_array[r[rs1] + s_imm] = r[rs2] 
+                        memory_array[r[rs1] + s_imm] = r[rs2]; 
         break;
         }
     break;
