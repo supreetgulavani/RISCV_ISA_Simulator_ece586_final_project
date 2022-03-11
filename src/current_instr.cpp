@@ -70,8 +70,7 @@ void current_instr::instr_execution(uint32_t r[]){
                 //SLL : Shift Logical Left
                 case sll_funct3: 
                                 print_instr("SLL Instruction Detected");
-                                r[rd] = r[rs1]  << r[rs2];           
-                            
+                                r[rd] = r[rs1] << (r[rs2] % 32);       
                 break;
 
                 //SRL : Shift Logical Right
@@ -83,13 +82,13 @@ void current_instr::instr_execution(uint32_t r[]){
                 //SLT : Set Less Than
                 case slt_funct3: 
                                 print_instr("SLT Instruction Detected");
-                                r[rd] =  (int)r[rs1] < (int)r[rs2] ? 1 : 0;
+                                r[rd] =  (int)r[rs1] < (int)r[rs2] ? 0x00000001 : 0x0;
                 break;
 
                 //SLTU : Set Less Than Unsigned
                 case sltu_funct3: 
                                 print_instr("SLTU Instruction Detected");
-                                r[rd] =  (unsigned)r[rs1] < (unsigned)r[rs2] ? 1 : 0;  
+                                r[rd] =  r[rs1] < r[rs2] ? 0x00000001 : 0x0;  
                 break;
             }
         break;
@@ -99,13 +98,16 @@ void current_instr::instr_execution(uint32_t r[]){
                 //SUB : Subtraction
                 case sub_funct3: 
                                 print_instr("SUB Instruction Detected");
-
+                                r[rd] = (int)r[rs1] - (int)r[rs2];
                 break;
                 
                 //SRA : Shift Right Arithmetic
                 case sra_funct3: 
                                 print_instr("SRA Instruction Detected");
-                                r[rd] = ((int)r[rs1] ^ 0x0) >> (int)r[rs2];
+                                if (r[rs1] & 80000000)
+                                    r[rd] = (r[rs1] >> r[rs2]) | ((2**(r[rs2]+1) - 1) << (32-r[rs2]));
+                                else
+                                    r[rd] = r[rs1] >> r[rs2];
                 break;
             }   
         break;
@@ -141,7 +143,7 @@ void current_instr::instr_execution(uint32_t r[]){
             //SLLI : Shift Logical Left Immediate
             case slli_funct3: 
                             print_instr("SLLI Instruction Detected");
-                            r[rd] = r[rs1] << r[i_imm];      
+                            r[rd] = r[rs1] << ((int)i_imm % 32);      
             break;
 
             //SRAI, SRLI : Shift Right Arithmetic Immediate, Shift Right Logical Immediate

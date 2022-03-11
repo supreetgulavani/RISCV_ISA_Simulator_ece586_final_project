@@ -118,11 +118,11 @@ class current_instr{
     uint8_t rs2;
 
     // Immediate values masking and decoding for each type of instr
-    uint16_t i_imm;
-    uint16_t s_imm;
-    uint16_t b_imm;
-    uint16_t u_imm;
-    uint16_t j_imm;
+    uint32_t i_imm;
+    uint32_t s_imm;
+    uint32_t b_imm;
+    uint32_t u_imm;
+    uint32_t j_imm;
 
     // Get current Instruction type (Do we even need this??)
     uint8_t get_instr_type(uint8_t opcode);
