@@ -112,7 +112,7 @@ void current_instr::instr_execution(uint32_t r[]){
                 case sra_funct3: 
                                 print_instr("SRA Instruction Detected");
                                 if (r[rs1] & 80000000)
-                                    r[rd] = (r[rs1] >> r[rs2]) | (2**(r[rs2]+1) - 1) << (32-r[rs2]);
+                                    r[rd] = (r[rs1] >> r[rs2]) | ((2**(r[rs2]+1) - 1) << (32-r[rs2]));
                                 else
                                     r[rd] = r[rs1] >> r[rs2];
                 break;
