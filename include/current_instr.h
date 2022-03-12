@@ -147,6 +147,5 @@ class current_instr{
     void print_instr(std::string str);
 
     uint64_t get_power (uint64_t base, uint64_t exponent);
-
 };
 #endif

@@ -1,6 +1,5 @@
 #testing for OR
-addi a9, a10, 200
-or  a13, a14, a15 
-srai zero, a4, a15
-
-
+addi a4, a5, 200
+or  a3, a2, a1 
+or a4,zero, a5
+jr ra

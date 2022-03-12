@@ -1,6 +1,6 @@
 #testing for ADD
-addi a9, a10, 200
+addi a2, a1, 200
 add  a1, a2, a3
-add  zero, a9, a10
+add  a3, zero, a4
 
 

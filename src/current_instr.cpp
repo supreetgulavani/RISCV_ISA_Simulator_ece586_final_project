@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <array>
+#include <vector>
 
 #include "commondefs.h"
 #include "fileparse.h"
@@ -407,4 +408,14 @@ void current_instr::instr_execution(uint32_t r[]){
     }    
 
 }
+
+
+
+
+
+
+
+
+
+
 
