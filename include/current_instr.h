@@ -143,9 +143,10 @@ class current_instr{
     // Instruction Execution logic
     void instr_execution(uint32_t r[]);
 
-    // print func
+    //prints detected instruction
     void print_instr(std::string str);
 
+    //function to get exponential power
     uint64_t get_power (uint64_t base, uint64_t exponent);
 
 };
