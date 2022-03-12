@@ -3,7 +3,6 @@
 #include <string>
 #include <sstream>
 #include <array>
-#include <vector>
 
 #include "commondefs.h"
 #include "fileparse.h"
@@ -28,8 +27,11 @@ int32_t current_instr::get_signed_j_imm(uint32_t j_imm){
 }
 
 void current_instr::print_instr(std::string str) {
+    std:: stringstream op;
     if (verbose){
-        std::cout << str << std::endl;
+        op << str << std::endl;
+        std::cout << op.str();
+        current_instr_reg_file << op.str();
     }
 }
 
@@ -78,7 +80,7 @@ void current_instr::instr_execution(uint32_t r[]){
                 //SLL : Shift Logical Left
                 case sll_funct3: 
                                 print_instr("SLL Instruction Detected");
-                                r[rd] = r[rs1] << (r[rs2] % 32);       
+                                r[rd] = r[rs1] << r[rs2];       
                 break;
 
                 //SRL : Shift Logical Right
@@ -356,7 +358,7 @@ void current_instr::instr_execution(uint32_t r[]){
 
     //AUIPC: Add Upper Immediate to PC
     case 0x17: 
-                print_instr("AUIPC Instruction Detected");
+                 print_instr("AUIPC Instruction Detected");
                 r[rd] = c_pc + u_imm;           //20 and lower 12 zero: check this instr again
     break;
 
@@ -392,13 +394,16 @@ void current_instr::instr_execution(uint32_t r[]){
         c_pc =  c_pc + 4;
 
     if (verbose){
-        std::cout << "Result:\t" << std::hex << r[rd] << "\n" << std::endl;
-        std::cout << "Register values are:" << std::endl;
+        std:: stringstream op;
+        op << "Result:\t" << std::hex << r[rd] << "\n" << std::endl;
+        op << "Register values are:" << std::endl;
         int reg_elements = 0;
         for (int i = reg_elements; i <= 31; i++){
-            std::cout << i << ":" << std::uppercase << std::hex << r[i] << "\t";
+            op << i << ":" << std::uppercase << std::hex << r[i] << "\t";
         }
-        std::cout << "\nProgram Counter:" << std:: uppercase << std::hex << c_pc << "\n" << std::endl;
+        op << "\nProgram Counter:" << std:: uppercase << std::hex << c_pc << "\n" << std::endl;
+        std::cout << op.str();
+        current_instr_reg_file << op.str();
     }    
 
 }

@@ -23,9 +23,7 @@ int main(int argc, char *argv[])
     std::ofstream mem_fstream;
     std::string op_fname;
 
-    isa_sim isa;
     
-
     // Check if input trace file is provided
     // First argument is always executable name
     if (argc < 7) {
@@ -50,6 +48,8 @@ int main(int argc, char *argv[])
     std::cout << "Output File: " << op_fname << std::endl;
     mem_fstream.open(op_fname, std::ios::out);
 
+    isa_sim isa(mem_fstream);
+        
     // Take Program Counter as input
     isa.program_counter = std::strtoul(argv[3], nullptr, 16);
     std::cout << "Program Counter: " << std::uppercase << std::hex << isa.program_counter << std::endl;
@@ -94,24 +94,22 @@ int main(int argc, char *argv[])
             read_file(ip_string, req);
 
             std::cout  << req << std::endl;
-            std::stringstream op;
+          /*  std::stringstream op;
     
             op  << "Instruction Location:" << req.instruction_location << "\tInstruction:" << std::hex << req.instruction << "\tProgram Counter:"<< std::uppercase << std::hex << isa.program_counter 
                  << std::uppercase << std::hex << "\tStack Address:" << isa.stack_address << std::uppercase << std::hex << "\tStack Pointer:" << isa.stack_pointer << std::endl;
             //std::cout << op.str();
             // Add the parsed contents to a file  (showoff nothing else)
-            mem_fstream << op.str();
+            mem_fstream << op.str();*/
         }
           if (!(ip_mem_fstream->is_open())) {
             std::cout << "\n -- Input file Over! -- \n" << std::endl;
             break;
           }
     }
+
     // Free the filestream heap
     delete ip_mem_fstream;
-
-    // Close output file
-    mem_fstream.close();
     
     if (debug || verbose){
     //print mem image
@@ -121,5 +119,9 @@ int main(int argc, char *argv[])
     }
 
     isa.start_execution();
+
+      // Close output file
+    mem_fstream.close();
     return 0;
+
 }

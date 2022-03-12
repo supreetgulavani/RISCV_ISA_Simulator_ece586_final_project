@@ -1,3 +1,4 @@
+#include <iomanip>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,6 +8,14 @@
 #include "fileparse.h"
 #include "isasim.h"
 #include "current_instr.h"
+
+isa_sim::isa_sim(std::ofstream &isa_reg):
+    isa_reg_file(isa_reg)
+{
+        program_counter = 0;
+        stack_pointer = 0;
+}
+
 
 void isa_sim::print_mem(){
     int mem_elements = 0;
@@ -23,19 +32,23 @@ void isa_sim::start_execution(){
     uint64_t current_pc = program_counter;
     uint64_t current_sp = stack_pointer;
     while (1){
-        current_instr current(current_pc, current_sp);
+        current_instr current(current_pc, current_sp, isa_reg_file);
         current.instr_execution(r);
         //update the pc and sp here
         if ((current.c_instr == 0x00008067) && (r[0x1] == 0x0))
             break;
     }
     if (debug){
-        std::cout << "Register values are:" << std::endl;
+        
+        std::stringstream op;
+        op << "Register values are:" << std::endl;
         int reg_elements = 0;
         for (int i = reg_elements; i <= 31; i++){
-            std::cout << i << ":" << std::uppercase << std::hex << r[i] << "\t";
+            op << i << ":" << std::uppercase << std::hex << r[i] << "\t";
         }
-    std::cout << "\nProgram Counter:" << std:: uppercase << std::hex << current_pc << "\n" << std::endl;
+    op << "\nProgram Counter:" << std:: uppercase << std::hex << current_pc << "\n" << std::endl;
+    std::cout << op.str();
+    isa_reg_file << op.str();
+
     }
 }
-
