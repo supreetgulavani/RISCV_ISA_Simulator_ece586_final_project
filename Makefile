@@ -40,13 +40,16 @@ build:
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(OBJ_DIR)
 
-debug: CXXFLAGS += -g -DDEBUG
+debug: CXXFLAGS += -g -DDEBUG 
 debug: all
+
+step: CXXFLAGS += -g -DDEBUG -DSTEP 
+step: all
 
 release: CXXFLAGS += -O2
 release: all
 
-.PHONY: all clean debug release build info
+.PHONY: all clean debug release step build info
 
 .DEFAULT_GOAL := release
 
@@ -61,9 +64,4 @@ info:
 	@echo "Objects:\t" $(OBJS)
 	@echo "Dependencies:\t" $(DEPS)
 
-##define verbose
-#$(if $(V),$(info $(1)))
-#endef
-
-#$(call verbose,SRCS = $(SRCS))
 
