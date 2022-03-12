@@ -10,7 +10,7 @@
 // Class for the request queue
 class request {
 public:
-    //Instruction Location, instruction
+    //Instruction Location, Instruction
     uint64_t instruction_location;
     uint64_t instruction;
     
@@ -27,7 +27,6 @@ public:
     }
     
     //loading memory with program instr
-
     void load_mem(request &req){
 
         memory_array[req.instruction_location]     = (req.instruction & (0x000000FF));
