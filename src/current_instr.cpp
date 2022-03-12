@@ -175,13 +175,13 @@ void current_instr::instr_execution(uint32_t r[]){
             //SLTI : Set Less Than Immediate
             case slti_funct3: 
                             print_instr("SLTI Instruction Detected");
-                            r[rd] =  (int)r[rs1] < (int)i_imm ? 1 : 0;
+                            r[rd] =  (int)r[rs1] < get_signed_i_imm(i_imm) ? 1 : 0;
             break;
 
             //SLTIU : Set Less Than Immediate Unsigned
             case sltiu_funct3: 
                             print_instr("SLTIU Instruction Detected");
-                            r[rd] =  (unsigned)r[rs1] < (unsigned)i_imm ? 1 : 0;  
+                            r[rd] =  r[rs1] < i_imm ? 1 : 0;  
             break;
         }
     break;
@@ -190,71 +190,58 @@ void current_instr::instr_execution(uint32_t r[]){
         switch(funct3){
             //LB : Load Byte
             case lb_funct3:
-                        //loading offset i.e immediate value added with are base address into destination
                         print_instr("LB Instruction Detected");
-						//r[rd] = ((r[rs1] + i_imm) & 0x8000) ? ((r[rs1] + i_imm) | 0xFFFF0000) : ((r[rs1] + i_imm) & 0x0000FFFF); 
-						 
+                        if ((int)r[rs1] + get_signed_i_imm(i_imm) > 0x0000FFFF){
+                            print_instr("Exception: address out of bound");
+                            exit(EXIT_FAILURE);
+                        }
+						r[rd] = (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm)] & 0x000000FF) | ((memory_array[(int)r[rs1] + get_signed_b_imm(i_imm)] & 0x00000080) ? 0xFFFFFF00 : 0x0);			 
             break;
 
             //LH : Load Halfword
             case lh_funct3: 
-						 /*std::cout << "LH instruction Detected" << std::endl; //need  to define lh, Lower8, Upper8
-						 if ((i_imm + r[rs1]) & 0x00000001))
-						 {
-							cout<<"The addresses are not alligned";
-						 }
-						 else
-						 {
-						 Lower8 = memory_array[i_imm + r[rs1]];
-						 Upper8 = memory_array[i_imm + r[rs1] + 1];
-						 lh = (Upper8<<8)||(Lower8);
-						 r[rd] = (lh & 0x8000) ? (lh | 0xFFFF0000) : (lh & 0x0000FFFF);
-						 }
-				
-						 std::cout << "Load HalfWord Result:" << std:: hex << r[rd] << "\n" << std::endl;*/
+                        print_instr("LH Instruction Detected");
+                        if ((int)r[rs1] + get_signed_i_imm(i_imm) > 0x0000FFFE){
+                            print_instr("Exception: address out of bound");
+                            exit(EXIT_FAILURE);
+                        }
+                        else if (((int)r[rs1] + get_signed_b_imm(i_imm)) & 0x00000001)
+                            print_instr("Warning: address unaligned");
+                        r[rd] = (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm)] & 0x000000FF) | (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm) + 1] & 0x0000FF00) | ((memory_array[(int)r[rs1] + get_signed_b_imm(i_imm) + 1] & 0x00008000) ? 0xFFFF0000 : 0x0);
             break;
 
             //LW : Load Word 
             case lw_funct3:
-						 /*std::cout << "LW instruction Detected" << std::endl;
-						 if ((i_imm + r[rs1]) & 0x00000002)
-						 {
-							cout<<"The addresses are not alligned";
-						 }
-						 else
-						 {
-						 Lower8_0 = memory_array[i_imm + r[rs1]];
-						 Lower16_8 = memory_array[i_imm + r[rs1] + 1];
-						 Lower24_16 = memory_array[i_imm + r[rs1] + 2];
-						 Upper32_24 = memory_array[i_imm + r[rs1] + 3]; 
-						 r[rd] = (Upper32_24<<24)|(Lower24_16<<16)|(Lower16_8<<8)|(Lower8_0) ;
-						 }
-						 std::cout << "Load Word Result:" << std:: hex << r[rd] << "\n" << std::endl;*/
+						print_instr("LW Instruction Detected");
+                        if ((int)r[rs1] + get_signed_i_imm(i_imm) > 0x0000FFFC){
+                            print_instr("Exception: address out of bound");
+                            exit(EXIT_FAILURE);
+                        }
+                        else if (((int)r[rs1] + get_signed_b_imm(i_imm)) & 0x00000011)
+                            print_instr("Warning: address unaligned");
+                        r[rd] = (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm)] & 0x000000FF) | (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm) + 1] & 0x0000FF00) | (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm) + 2] & 0x00FF0000) | (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm) + 3] & 0xFF000000);
             break;
 
             //LBU : Load Byte Unsigned
             case lbu_funct3: 
-						 /* std::cout << "LBU instruction Detected" << std::endl;
-						  r[rd] = (memory_array[r[rs1] + i_imm])|(0x00000000);
-                          std::cout << "Load Byte Unisgned Result:" << std:: hex << r[rd] << "\n" << std::endl;*/
+						print_instr("LBU Instruction Detected");
+                        if ((int)r[rs1] + get_signed_i_imm(i_imm) > 0x0000FFFF){
+                            print_instr("Exception: address out of bound");
+                            exit(EXIT_FAILURE);
+                        }
+						r[rd] = (memory_array[(int)r[rs1] + get_signed_i_imm(i_imm)]) | (0x00000000);
             break;
 
             //LHU : Load Half Unsigned
             case lhu_funct3: 
-						  /*std::cout << "LHU instruction Detected" << std::endl;
-						  if ((i_imm + r[rs1]) & 0x00000001)
-						 {
-							cout<<"The addresses are not alligned";
-						 } //check alignment
-						 else
-						 {
-						  Lower8 = memory_array[i_imm + r[rs1]];
-						  Upper8 = memory_array[i_imm + r[rs1] + 1];
-						  lh = (Upper8<<8)||(Lower8);
-						  r[rd] = lh & 0x0000FFFF;
-						 }
-						  std::cout << "LHU Result:" << std:: hex << r[rd] << "\n" << std::endl;*/
-        
+						print_instr("LHU Instruction Detected");
+                        if ((int)r[rs1] + get_signed_i_imm(i_imm) > 0x0000FFFE){
+                            print_instr("Exception: address out of bound");
+                            exit(EXIT_FAILURE);
+                        }
+                        else if (((int)r[rs1] + get_signed_b_imm(i_imm)) & 0x00000001)
+                            print_instr("Warning: address unaligned");
+                        r[rd] = (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm)] & 0x000000FF) | (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm) + 1] & 0x0000FF00);
             break;
         }
     break;
@@ -264,9 +251,14 @@ void current_instr::instr_execution(uint32_t r[]){
         switch(funct3){
             //JALR : Jump & Link Register
             case jalr_funct3: 
-                            print_instr("JALR Instruction Detected");
-                            //c_pc = r[rs1] + i_imm;
-                            //pc_changed = true;
+                        print_instr("JALR Instruction Detected");
+                        r[rd] = c_pc + 4;
+                        c_pc = ((int)r[rs1] + get_signed_i_imm(i_imm)) << 1;
+                        if (c_pc & 0x00000003){
+                            print_instr("Exception: Unaligned jump");
+                            exit(EXIT_FAILURE);
+                        }
+                        pc_changed = true;
             break;
             }
     break;
