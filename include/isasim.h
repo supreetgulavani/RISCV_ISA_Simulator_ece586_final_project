@@ -29,10 +29,11 @@ class isa_sim{
     //Print memory image
     void print_mem();
 
-    std::ofstream& isa_reg_file;
+    //prints registers
+    void print_reg();
     
+    std::ofstream& isa_reg_file;
     isa_sim(std::ofstream& isa_reg_file);
-
 
 };
 
