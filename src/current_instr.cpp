@@ -55,50 +55,50 @@ void current_instr::instr_execution(uint32_t r[]){
             switch(funct3) {
                 //ADD: Addition
                 case add_funct3: 
-                                print_instr("ADD Instruction Detected");
-                                r[rd] = (int)r[rs1] + (int)r[rs2];
+                    print_instr("ADD Instruction Detected");
+                    r[rd] = (int)r[rs1] + (int)r[rs2];
                 break;
 
                 //XOR
                 case xor_funct3: 
-                                print_instr("XOR Instruction Detected");
-                                r[rd] = r[rs1] ^ r[rs2];
+                    print_instr("XOR Instruction Detected");
+                    r[rd] = r[rs1] ^ r[rs2];
                 break;
 
                 //OR
                 case or_funct3: 
-                                print_instr("OR Instruction Detected");
-                                r[rd] = r[rs1] | r[rs2];
+                    print_instr("OR Instruction Detected");
+                    r[rd] = r[rs1] | r[rs2];
                 break;
 
                 //AND 
                 case and_funct3: 
-                                print_instr("AND Instruction Detected");
-                                r[rd] = r[rs1] & r[rs2];
+                    print_instr("AND Instruction Detected");
+                    r[rd] = r[rs1] & r[rs2];
                 break;
                 
                 //SLL : Shift Logical Left
                 case sll_funct3: 
-                                print_instr("SLL Instruction Detected");
-                                r[rd] = r[rs1] << r[rs2];       
+                    print_instr("SLL Instruction Detected");
+                    r[rd] = r[rs1] << r[rs2];       
                 break;
 
                 //SRL : Shift Logical Right
                 case srl_funct3: 
-                                print_instr("SRL Instruction Detected");
-                                r[rd] = r[rs1] >> r[rs2];          
+                    print_instr("SRL Instruction Detected");
+                    r[rd] = r[rs1] >> r[rs2];          
                 break;
 
                 //SLT : Set Less Than
                 case slt_funct3: 
-                                print_instr("SLT Instruction Detected");
-                                r[rd] =  (int)r[rs1] < (int)r[rs2] ? 0x00000001 : 0x0;
+                    print_instr("SLT Instruction Detected");
+                    r[rd] =  (int)r[rs1] < (int)r[rs2] ? 0x00000001 : 0x0;
                 break;
 
                 //SLTU : Set Less Than Unsigned
                 case sltu_funct3: 
-                                print_instr("SLTU Instruction Detected");
-                                r[rd] =  r[rs1] < r[rs2] ? 0x00000001 : 0x0;  
+                    print_instr("SLTU Instruction Detected");
+                    r[rd] =  r[rs1] < r[rs2] ? 0x00000001 : 0x0;  
                 break;
             }
         break;
@@ -107,17 +107,17 @@ void current_instr::instr_execution(uint32_t r[]){
             switch(funct3) {
                 //SUB : Subtraction
                 case sub_funct3: 
-                                print_instr("SUB Instruction Detected");
-                                r[rd] = (int)r[rs1] - (int)r[rs2];
+                    print_instr("SUB Instruction Detected");
+                    r[rd] = (int)r[rs1] - (int)r[rs2];
                 break;
                 
                 //SRA : Shift Right Arithmetic
                 case sra_funct3: 
-                                print_instr("SRA Instruction Detected");
-                                if (r[rs1] & 80000000)
-                                    r[rd] = (r[rs1] >> r[rs2]) | ((get_power(2, (r[rs2]+1)) - 1) << (32-r[rs2]));
-                                else
-                                    r[rd] = r[rs1] >> r[rs2];
+                    print_instr("SRA Instruction Detected");
+                    if (r[rs1] & 80000000)
+                        r[rd] = (r[rs1] >> r[rs2]) | ((get_power(2, (r[rs2]+1)) - 1) << (32-r[rs2]));
+                    else
+                        r[rd] = r[rs1] >> r[rs2];
                 break;
             }   
         break;
@@ -128,59 +128,60 @@ void current_instr::instr_execution(uint32_t r[]){
         switch(funct3){
             //ADDI : Addition Immediate
             case addi_funct3: 
-                            print_instr("ADDI Instruction Detected");
-                            r[rd] = r[rs1] + get_signed_i_imm(i_imm);
+                print_instr("ADDI Instruction Detected");
+                r[rd] = r[rs1] + get_signed_i_imm(i_imm);
+                            
             break;
 
             //XORI (Immediate) 
             case xori_funct3: 
-                            print_instr("XORI Instruction Detected");
-                            r[rd] = r[rs1] ^ i_imm;
+                print_instr("XORI Instruction Detected");
+                r[rd] = r[rs1] ^ i_imm;
             break;
 
             //ORI (Immediate) 
             case ori_funct3: 
-                            print_instr("ORI Instruction Detected");
-                            r[rd] = r[rs1] | i_imm;
+                print_instr("ORI Instruction Detected");
+                r[rd] = r[rs1] | i_imm;
             break;
 
             //ANDI (Immediate) 
             case andi_funct3: 
-                            print_instr("ANDI Instruction Detected");
-                            r[rd] = r[rs1] & i_imm;
+                print_instr("ANDI Instruction Detected");
+                r[rd] = r[rs1] & i_imm;
             break;
 
             //SLLI : Shift Logical Left Immediate
             case slli_funct3: 
-                            print_instr("SLLI Instruction Detected");
-                            r[rd] = r[rs1] << ((int)i_imm % 32);      
+                print_instr("SLLI Instruction Detected");
+                r[rd] = r[rs1] << ((int)i_imm % 32);      
             break;
 
             //SRAI, SRLI : Shift Right Arithmetic Immediate, Shift Right Logical Immediate
             case srli_srai_funct3: 
-                    switch(funct7){
-                        case srai_funct7:
-                                        print_instr("SRAI Instruction Detected");
-                                        r[rd] = ((int)r[rs1] ^ 0x0) >> i_imm;  
-                        break;
-                        case srli_funct7:
-                                        print_instr("SRLI Instruction Detected");
-                                        r[rd] = r[rs1] >> i_imm;   
-                        break;
+                switch(funct7){
+                    case srai_funct7:
+                        print_instr("SRAI Instruction Detected");
+                        r[rd] = ((int)r[rs1] ^ 0x0) >> i_imm;  
+                    break;
+                    case srli_funct7:
+                        print_instr("SRLI Instruction Detected");
+                        r[rd] = r[rs1] >> i_imm;   
+                    break;
                     }
                        
             break;
 
             //SLTI : Set Less Than Immediate
             case slti_funct3: 
-                            print_instr("SLTI Instruction Detected");
-                            r[rd] =  (int)r[rs1] < (int)i_imm ? 1 : 0;
+                print_instr("SLTI Instruction Detected");
+                r[rd] =  (int)r[rs1] < (int)i_imm ? 1 : 0;
             break;
 
             //SLTIU : Set Less Than Immediate Unsigned
             case sltiu_funct3: 
-                            print_instr("SLTIU Instruction Detected");
-                            r[rd] =  (unsigned)r[rs1] < (unsigned)i_imm ? 1 : 0;  
+                print_instr("SLTIU Instruction Detected");
+                r[rd] =  (unsigned)r[rs1] < (unsigned)i_imm ? 1 : 0;  
             break;
         }
     break;
@@ -189,9 +190,9 @@ void current_instr::instr_execution(uint32_t r[]){
         switch(funct3){
             //LB : Load Byte
             case lb_funct3:
-                        //loading offset i.e immediate value added with are base address into destination
-                        print_instr("LB Instruction Detected");
-						//r[rd] = ((r[rs1] + i_imm) & 0x8000) ? ((r[rs1] + i_imm) | 0xFFFF0000) : ((r[rs1] + i_imm) & 0x0000FFFF); 
+                //loading offset i.e immediate value added with are base address into destination
+                print_instr("LB Instruction Detected");
+				//r[rd] = ((r[rs1] + i_imm) & 0x8000) ? ((r[rs1] + i_imm) | 0xFFFF0000) : ((r[rs1] + i_imm) & 0x0000FFFF); 
 						 
             break;
 
@@ -263,9 +264,9 @@ void current_instr::instr_execution(uint32_t r[]){
         switch(funct3){
             //JALR : Jump & Link Register
             case jalr_funct3: 
-                            print_instr("JALR Instruction Detected");
-                            //c_pc = r[rs1] + i_imm;
-                            //pc_changed = true;
+                print_instr("JALR Instruction Detected");
+                //c_pc = r[rs1] + i_imm;
+                //pc_changed = true;
             break;
             }
     break;
@@ -276,13 +277,13 @@ void current_instr::instr_execution(uint32_t r[]){
             case ecall_ebreak_funct3: 
                 switch(i_imm){
                 case 0x0: 
-                            print_instr("ECALL Instruction Detected");
-                            //Develop your ECALL instr implementation here
+                    print_instr("ECALL Instruction Detected");
+                    //Develop your ECALL instr implementation here
                 break;
 
                 case 0x1: 
-                            print_instr("EBREAK Instruction Detected");
-                            //Develop your EBREAK instr implementation here
+                    print_instr("EBREAK Instruction Detected");
+                    //Develop your EBREAK instr implementation here
                 break;
             }
             break;    
@@ -294,48 +295,48 @@ void current_instr::instr_execution(uint32_t r[]){
         switch(funct3){
             //BEQ : Branch if Equal
             case beq_funct3: 
-                          print_instr("BEQ Instruction Detected");
-                            if (r[rs1] == r[rs2]){
-                                c_pc += b_imm;
-                                pc_changed = true;
-                            }
+                print_instr("BEQ Instruction Detected");
+                if (r[rs1] == r[rs2]){
+                    c_pc += b_imm;
+                    pc_changed = true;
+                }
             break;
 
             //BNE : Branch if Not Equal
             case bne_funct3: 
-                            print_instr("BNE Instruction Detected");    
-                            std:: cout << (unsigned)b_imm << std::endl;
-                           if (r[rs1] != r[rs2]) {
-                                c_pc += b_imm;
-                                pc_changed = true;
-                            }    
+                print_instr("BNE Instruction Detected");    
+                std:: cout << (unsigned)b_imm << std::endl;
+                if (r[rs1] != r[rs2]) {
+                    c_pc += b_imm;
+                    pc_changed = true;
+                }    
             break;
 
             //BLT : Branch if Less Than
             case blt_funct3: 
-                            print_instr("BLT Instruction Detected");
-                            if (r[rs1] < r[rs2]) {
-                                c_pc += b_imm;
-                                pc_changed = true;
-                            }
+                print_instr("BLT Instruction Detected");
+                if (r[rs1] < r[rs2]) {
+                    c_pc += b_imm;
+                    pc_changed = true;
+                }
             break;
 
             //BGE : Branch if Greater than or Equal 
             case bge_funct3: 
-                           print_instr("BGE Instruction Detected");
-                            if(r[rs1] > r[rs2]) {
-                                c_pc += b_imm ;
-                                pc_changed = true;
-                            }
+                print_instr("BGE Instruction Detected");
+                if(r[rs1] > r[rs2]) {
+                    c_pc += b_imm ;
+                    pc_changed = true;
+                }
             break;
         
             //BLTU : Branch if Less Than Unsigned
             case bltu_funct3: 
-                            print_instr("BLTU Instruction Detected");
-                            if ((unsigned)r[rs1] >= (unsigned)r[rs2]) {
-                                c_pc += b_imm ;
-                                pc_changed = true;
-                            }
+                print_instr("BLTU Instruction Detected");
+                if ((unsigned)r[rs1] >= (unsigned)r[rs2]) {
+                    c_pc += b_imm ;
+                    pc_changed = true;
+                }
 
             break;
         
@@ -352,39 +353,39 @@ void current_instr::instr_execution(uint32_t r[]){
 
     //LUI: Load Upper Immediate 
     case 0x37: 
-                print_instr("LUI Instruction Detected");
-                r[rd] = u_imm;
+        print_instr("LUI Instruction Detected");
+        r[rd] = u_imm;
     break;
 
     //AUIPC: Add Upper Immediate to PC
     case 0x17: 
-                 print_instr("AUIPC Instruction Detected");
-                r[rd] = c_pc + u_imm;           //20 and lower 12 zero: check this instr again
+        print_instr("AUIPC Instruction Detected");
+        r[rd] = c_pc + u_imm;           //20 and lower 12 zero: check this instr again
     break;
 
     //JAL : Jump and Link
     case j_type_opcode: 
-                        print_instr("JAL Instruction Detected");
-                        c_pc += get_signed_j_imm(j_imm); 
-                        pc_changed = true;
-                        //r[rd] = c_pc + 4;                     
+        print_instr("JAL Instruction Detected");
+        c_pc += get_signed_j_imm(j_imm); 
+        pc_changed = true;
+        //r[rd] = c_pc + 4;                     
     break;
 
     case s_type_opcode: 
         switch(funct3){
         case sw_funct3: 
-                        print_instr("SW Instruction Detected");
-                        //((memory_array[r[rs1] + s_imm + 3]) << 24) | ((memory_array[r[rs1] + s_imm + 2]) << 16) | ((memory_array[r[rs1] + s_imm + 1]) << 8) | (memory_array[r[rs1] + s_imm]) = r[rs2] ;
+            print_instr("SW Instruction Detected");
+            //((memory_array[r[rs1] + s_imm + 3]) << 24) | ((memory_array[r[rs1] + s_imm + 2]) << 16) | ((memory_array[r[rs1] + s_imm + 1]) << 8) | (memory_array[r[rs1] + s_imm]) = r[rs2] ;
         break;
 
         case sb_funct3: 
-                        print_instr("SB Instruction Detected");
-                        //((memory_array[r[rs1] + s_imm + 1]) << 8) | (memory_array[r[rs1] + s_imm]) = r[rs2] ;
+            print_instr("SB Instruction Detected");
+            //((memory_array[r[rs1] + s_imm + 1]) << 8) | (memory_array[r[rs1] + s_imm]) = r[rs2] ;
         break;
 
         case sh_funct3: 
-                        print_instr("SH Instruction Detected");
-                        //memory_array[r[rs1] + s_imm] = r[rs2]; 
+            print_instr("SH Instruction Detected");
+            //memory_array[r[rs1] + s_imm] = r[rs2]; 
         break;
         }
     break;
