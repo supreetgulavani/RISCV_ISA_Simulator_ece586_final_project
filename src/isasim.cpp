@@ -13,7 +13,7 @@ isa_sim::isa_sim(std::ofstream &isa_reg):
     isa_reg_file(isa_reg)
 {
         program_counter = 0;
-        stack_pointer = 0;
+        stack_pointer = 65536;
 }
 
 
@@ -30,7 +30,10 @@ void isa_sim::print_mem(){
 void isa_sim::start_execution(){
 
     uint64_t current_pc = program_counter;
+    /////////////////////////////////////////////////
+    /////   CORRECT?    /////////////////////////////
     uint64_t current_sp = stack_pointer;
+    /////////////////////////////////////////////////
     while (1){
         current_instr current(current_pc, current_sp, isa_reg_file);
         current.instr_execution(r);

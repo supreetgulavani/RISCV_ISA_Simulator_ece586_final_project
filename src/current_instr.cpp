@@ -12,11 +12,11 @@
 
 
 int32_t current_instr::get_signed_i_imm(uint32_t i_imm){
-    return((i_imm & 0xFFF) | ((i_imm & 0x800) ? 0xFFFFF000 : 0));
+    return((i_imm & 0xFFF) | ((i_imm & 0x800) ? 0xFFFFF000 : 0x00000000));
 }
 
 int32_t current_instr::get_signed_s_imm(uint32_t s_imm){
-    return((s_imm & 0xFFF) | ((s_imm & 0x800) ? 0xFFFFF000 : 0));
+    return((s_imm & 0xFFF) | ((s_imm & 0x800) ? 0xFFFFF000 : 0x00000000));
 }
 
 int32_t current_instr::get_signed_b_imm(uint32_t b_imm){
@@ -46,8 +46,12 @@ uint64_t current_instr::get_power (uint64_t base, uint64_t exponent) {
  }
 
 void current_instr::instr_execution(uint32_t r[]){
-
+    
+    /////////////////////////////////
+    r[2] = c_sp;    //// CORRECT??
+    /////////////////////////////////
     bool pc_changed = false;
+    int mem_elements = 65500;
 
     switch (opcode){
     case r_type_opcode:
@@ -81,13 +85,13 @@ void current_instr::instr_execution(uint32_t r[]){
                 //SLL : Shift Logical Left
                 case sll_funct3: 
                                 print_instr("SLL Instruction Detected");
-                                r[rd] = r[rs1] << r[rs2];       
+                                r[rd] = r[rs1] << (int)r[rs2];       
                 break;
 
                 //SRL : Shift Logical Right
                 case srl_funct3: 
                                 print_instr("SRL Instruction Detected");
-                                r[rd] = r[rs1] >> r[rs2];          
+                                r[rd] = r[rs1] >> (int)r[rs2];          
                 break;
 
                 //SLT : Set Less Than
@@ -116,9 +120,9 @@ void current_instr::instr_execution(uint32_t r[]){
                 case sra_funct3: 
                                 print_instr("SRA Instruction Detected");
                                 if (r[rs1] & 80000000)
-                                    r[rd] = (r[rs1] >> r[rs2]) | ((get_power(2, (r[rs2]+1)) - 1) << (32-r[rs2]));
+                                    r[rd] = (r[rs1] >> (int)r[rs2]) | ((get_power(2, ((int)r[rs2]+1)) - 1) << (32-(int)r[rs2]));
                                 else
-                                    r[rd] = r[rs1] >> r[rs2];
+                                    r[rd] = r[rs1] >> (int)r[rs2];
                 break;
             }   
         break;
@@ -130,31 +134,33 @@ void current_instr::instr_execution(uint32_t r[]){
             //ADDI : Addition Immediate
             case addi_funct3: 
                             print_instr("ADDI Instruction Detected");
-                            r[rd] = r[rs1] + get_signed_i_imm(i_imm);
+                            std::cout << "r[rs1]: " << r[rs1] << std::endl;
+                            r[rd] = (int)r[rs1] + get_signed_i_imm(i_imm);
+                            std::cout << "i_imm: " << get_signed_i_imm(i_imm) << std::endl;
             break;
 
             //XORI (Immediate) 
             case xori_funct3: 
                             print_instr("XORI Instruction Detected");
-                            r[rd] = r[rs1] ^ i_imm;
+                            r[rd] = r[rs1] ^ get_signed_i_imm(i_imm);
             break;
 
             //ORI (Immediate) 
             case ori_funct3: 
                             print_instr("ORI Instruction Detected");
-                            r[rd] = r[rs1] | i_imm;
+                            r[rd] = r[rs1] | get_signed_i_imm(i_imm);
             break;
 
             //ANDI (Immediate) 
             case andi_funct3: 
                             print_instr("ANDI Instruction Detected");
-                            r[rd] = r[rs1] & i_imm;
+                            r[rd] = r[rs1] & get_signed_i_imm(i_imm);
             break;
 
             //SLLI : Shift Logical Left Immediate
             case slli_funct3: 
                             print_instr("SLLI Instruction Detected");
-                            r[rd] = r[rs1] << ((int)i_imm % 32);      
+                            r[rd] = r[rs1] << get_signed_i_imm(i_imm);      
             break;
 
             //SRAI, SRLI : Shift Right Arithmetic Immediate, Shift Right Logical Immediate
@@ -162,11 +168,15 @@ void current_instr::instr_execution(uint32_t r[]){
                     switch(funct7){
                         case srai_funct7:
                                         print_instr("SRAI Instruction Detected");
-                                        r[rd] = ((int)r[rs1] ^ 0x0) >> i_imm;  
+                                        //r[rd] = ((int)r[rs1] ^ 0x0) >> get_signed_i_imm(i_imm);
+                                        if (r[rs1] & 80000000)
+                                            r[rd] = (r[rs1] >> get_signed_i_imm(i_imm)) | ((get_power(2, (get_signed_i_imm(i_imm)+1)) - 1) << (32-get_signed_i_imm(i_imm)));
+                                        else
+                                            r[rd] = r[rs1] >> get_signed_i_imm(i_imm);
                         break;
                         case srli_funct7:
                                         print_instr("SRLI Instruction Detected");
-                                        r[rd] = r[rs1] >> i_imm;   
+                                        r[rd] = r[rs1] >> get_signed_i_imm(i_imm);   
                         break;
                     }
                        
@@ -193,9 +203,8 @@ void current_instr::instr_execution(uint32_t r[]){
                         print_instr("LB Instruction Detected");
                         if ((int)r[rs1] + get_signed_i_imm(i_imm) > 0x0000FFFF){
                             print_instr("Exception: address out of bound");
-                            exit(EXIT_FAILURE);
                         }
-						r[rd] = (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm)] & 0x000000FF) | ((memory_array[(int)r[rs1] + get_signed_b_imm(i_imm)] & 0x00000080) ? 0xFFFFFF00 : 0x0);			 
+						r[rd] = (memory_array[(int)r[rs1] + get_signed_i_imm(i_imm)] & 0x000000FF) | ((memory_array[(int)r[rs1] + get_signed_i_imm(i_imm)] & 0x00000080) ? 0xFFFFFF00 : 0x0);			 
             break;
 
             //LH : Load Halfword
@@ -203,11 +212,10 @@ void current_instr::instr_execution(uint32_t r[]){
                         print_instr("LH Instruction Detected");
                         if ((int)r[rs1] + get_signed_i_imm(i_imm) > 0x0000FFFE){
                             print_instr("Exception: address out of bound");
-                            exit(EXIT_FAILURE);
                         }
-                        else if (((int)r[rs1] + get_signed_b_imm(i_imm)) & 0x00000001)
+                        else if (((int)r[rs1] + get_signed_i_imm(i_imm)) & 0x00000001)
                             print_instr("Warning: address unaligned");
-                        r[rd] = (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm)] & 0x000000FF) | (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm) + 1] & 0x0000FF00) | ((memory_array[(int)r[rs1] + get_signed_b_imm(i_imm) + 1] & 0x00008000) ? 0xFFFF0000 : 0x0);
+                        r[rd] = (memory_array[(int)r[rs1] + get_signed_i_imm(i_imm)]) | (memory_array[(int)r[rs1] + get_signed_i_imm(i_imm) + 1] << 8) | ((memory_array[(int)r[rs1] + get_signed_i_imm(i_imm) + 1] & 0x00000080) ? 0xFFFF0000 : 0x0);
             break;
 
             //LW : Load Word 
@@ -215,11 +223,10 @@ void current_instr::instr_execution(uint32_t r[]){
 						print_instr("LW Instruction Detected");
                         if ((int)r[rs1] + get_signed_i_imm(i_imm) > 0x0000FFFC){
                             print_instr("Exception: address out of bound");
-                            exit(EXIT_FAILURE);
                         }
-                        else if (((int)r[rs1] + get_signed_b_imm(i_imm)) & 0x00000011)
+                        else if (((int)r[rs1] + get_signed_i_imm(i_imm)) & 0x00000003)
                             print_instr("Warning: address unaligned");
-                        r[rd] = (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm)] & 0x000000FF) | (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm) + 1] & 0x0000FF00) | (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm) + 2] & 0x00FF0000) | (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm) + 3] & 0xFF000000);
+                        r[rd] = (memory_array[(int)r[rs1] + get_signed_i_imm(i_imm)]) | (memory_array[(int)r[rs1] + get_signed_i_imm(i_imm) + 1] << 8) | (memory_array[(int)r[rs1] + get_signed_i_imm(i_imm) + 2] << 16) | (memory_array[(int)r[rs1] + get_signed_i_imm(i_imm) + 3] << 24);
             break;
 
             //LBU : Load Byte Unsigned
@@ -227,7 +234,6 @@ void current_instr::instr_execution(uint32_t r[]){
 						print_instr("LBU Instruction Detected");
                         if ((int)r[rs1] + get_signed_i_imm(i_imm) > 0x0000FFFF){
                             print_instr("Exception: address out of bound");
-                            exit(EXIT_FAILURE);
                         }
 						r[rd] = (memory_array[(int)r[rs1] + get_signed_i_imm(i_imm)]) | (0x00000000);
             break;
@@ -237,11 +243,10 @@ void current_instr::instr_execution(uint32_t r[]){
 						print_instr("LHU Instruction Detected");
                         if ((int)r[rs1] + get_signed_i_imm(i_imm) > 0x0000FFFE){
                             print_instr("Exception: address out of bound");
-                            exit(EXIT_FAILURE);
                         }
-                        else if (((int)r[rs1] + get_signed_b_imm(i_imm)) & 0x00000001)
+                        else if (((int)r[rs1] + get_signed_i_imm(i_imm)) & 0x00000001)
                             print_instr("Warning: address unaligned");
-                        r[rd] = (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm)] & 0x000000FF) | (memory_array[(int)r[rs1] + get_signed_b_imm(i_imm) + 1] & 0x0000FF00);
+                        r[rd] = (memory_array[(int)r[rs1] + get_signed_i_imm(i_imm)] & 0x000000FF) | (memory_array[(int)r[rs1] + get_signed_i_imm(i_imm) + 1] << 8);
             break;
         }
     break;
@@ -256,7 +261,9 @@ void current_instr::instr_execution(uint32_t r[]){
                         c_pc = ((int)r[rs1] + get_signed_i_imm(i_imm)) << 1;
                         if (c_pc & 0x00000003){
                             print_instr("Exception: Unaligned jump");
-                            exit(EXIT_FAILURE);
+                        }
+                        else if ((int)r[rs1] + get_signed_i_imm(i_imm) > 0x0000FFFC){
+                            print_instr("Exception: address out of bound");
                         }
                         pc_changed = true;
             break;
@@ -285,58 +292,74 @@ void current_instr::instr_execution(uint32_t r[]){
 
     case b_type_opcode:
         switch(funct3){
-            //BEQ : Branch if Equal
+            // BEQ : Branch if Equal
             case beq_funct3: 
                           print_instr("BEQ Instruction Detected");
                             if (r[rs1] == r[rs2]){
-                                c_pc += b_imm;
+                                c_pc += get_signed_b_imm(b_imm);
+                                if (c_pc & 0x00000003){
+                                    print_instr("Exception: Unaligned jump");
+                                }
                                 pc_changed = true;
                             }
             break;
 
-            //BNE : Branch if Not Equal
-            case bne_funct3: 
-                            print_instr("BNE Instruction Detected");    
-                            std:: cout << (unsigned)b_imm << std::endl;
-                           if (r[rs1] != r[rs2]) {
-                                c_pc += b_imm;
+            // BNE : Branch if Not Equal
+            case bne_funct3:
+                            print_instr("BNE Instruction Detected");
+                            if (r[rs1] != r[rs2]){
+                                c_pc += get_signed_b_imm(b_imm);
+                                if (c_pc & 0x00000003){
+                                    print_instr("Exception: Unaligned jump");
+                                }
                                 pc_changed = true;
-                            }    
+                            }
             break;
 
-            //BLT : Branch if Less Than
-            case blt_funct3: 
+            // BLT : Branch if Less Than
+            case blt_funct3:
                             print_instr("BLT Instruction Detected");
-                            if (r[rs1] < r[rs2]) {
-                                c_pc += b_imm;
+                            if ((int)r[rs1] < (int)r[rs2]){
+                                c_pc += get_signed_b_imm(b_imm);
+                                if (c_pc & 0x00000003){
+                                    print_instr("Exception: Unaligned jump");
+                                }
                                 pc_changed = true;
                             }
             break;
 
-            //BGE : Branch if Greater than or Equal 
+            // BGE : Branch if Greater than or Equal 
             case bge_funct3: 
-                           print_instr("BGE Instruction Detected");
-                            if(r[rs1] > r[rs2]) {
-                                c_pc += b_imm ;
+                            print_instr("BGE Instruction Detected");
+                            if((int)r[rs1] >= (int)r[rs2]) {
+                                c_pc += get_signed_b_imm(b_imm);
+                                if (c_pc & 0x00000003){
+                                    print_instr("Exception: Unaligned jump");
+                                }  
                                 pc_changed = true;
                             }
             break;
         
-            //BLTU : Branch if Less Than Unsigned
+            // BLTU : Branch if Less Than Unsigned
             case bltu_funct3: 
                             print_instr("BLTU Instruction Detected");
-                            if ((unsigned)r[rs1] >= (unsigned)r[rs2]) {
-                                c_pc += b_imm ;
+                            if ((int)r[rs1] < (int)r[rs2]) {
+                                c_pc += get_signed_b_imm(b_imm);
+                                if (c_pc & 0x00000003){
+                                    print_instr("Exception: Unaligned jump");
+                                }
                                 pc_changed = true;
                             }
-
             break;
         
-            //BGE : Branch if Greater than or Equal Unsigned
+            // BGEU : Branch if Greater than or Equal Unsigned
             case bgeu_funct3: 
                             print_instr("BGEU Instruction Detected");
-                            if (r[rs1] >= r[rs2]) {
-                                c_pc += b_imm;
+                            if ((int)r[rs1] >= (int)r[rs2]) {
+                                c_pc += get_signed_b_imm(b_imm);
+                                if (c_pc & 0x00000003){
+                                    print_instr("Exception: Unaligned jump");
+                                }
                                 pc_changed = true;
                             }
             break;
@@ -351,33 +374,58 @@ void current_instr::instr_execution(uint32_t r[]){
 
     //AUIPC: Add Upper Immediate to PC
     case 0x17: 
-                 print_instr("AUIPC Instruction Detected");
-                r[rd] = c_pc + u_imm;           //20 and lower 12 zero: check this instr again
+                print_instr("AUIPC Instruction Detected");
+                r[rd] = (int)c_pc + (int)u_imm;
     break;
 
     //JAL : Jump and Link
     case j_type_opcode: 
-                        print_instr("JAL Instruction Detected");
-                        c_pc += get_signed_j_imm(j_imm); 
-                        pc_changed = true;
-                        //r[rd] = c_pc + 4;                     
+                print_instr("JAL Instruction Detected");
+                r[rd] = c_pc + 4;
+                c_pc += get_signed_j_imm(j_imm); 
+                if (c_pc & 0x00000003){
+                    print_instr("Exception: Unaligned jump");
+                }
+                pc_changed = true;                    
     break;
 
     case s_type_opcode: 
         switch(funct3){
         case sw_funct3: 
                         print_instr("SW Instruction Detected");
-                        //((memory_array[r[rs1] + s_imm + 3]) << 24) | ((memory_array[r[rs1] + s_imm + 2]) << 16) | ((memory_array[r[rs1] + s_imm + 1]) << 8) | (memory_array[r[rs1] + s_imm]) = r[rs2] ;
+                        std::cout << "r[rs2]: " << r[rs2] << std::endl;
+                        if ((int)r[rs1] + get_signed_s_imm(s_imm) > 0xFFFC){
+                            print_instr("Exception: address out of bound");
+                        }
+                        else if (((int)r[rs1] + get_signed_s_imm(s_imm)) & 0x00000003)
+                            print_instr("Warning: address unaligned");
+                        memory_array[(int)r[rs1] + get_signed_s_imm(s_imm) + 3] = (r[rs2] & 0xFF000000) >> 24; 
+                        memory_array[(int)r[rs1] + get_signed_s_imm(s_imm) + 2] = (r[rs2] & 0x00FF0000) >> 16;
+                        memory_array[(int)r[rs1] + get_signed_s_imm(s_imm) + 1] = (r[rs2] & 0x0000FF00) >> 8;
+                        memory_array[(int)r[rs1] + get_signed_s_imm(s_imm)]     = r[rs2] & 0x000000FF;
+
+                        for (int i = mem_elements; i <= 65535; i++){
+                            std::cout << i << ":" << std::uppercase << std::hex << (int)memory_array[i] << "\t";
+                        }
         break;
 
         case sb_funct3: 
                         print_instr("SB Instruction Detected");
-                        //((memory_array[r[rs1] + s_imm + 1]) << 8) | (memory_array[r[rs1] + s_imm]) = r[rs2] ;
+                        if ((int)r[rs1] + get_signed_i_imm(i_imm) > 0x0000FFFF){
+                            print_instr("Exception: address out of bound");
+                        }
+                        memory_array[(int)r[rs1] + get_signed_s_imm(s_imm)]     = r[rs2] & 0x000000FF;
         break;
 
         case sh_funct3: 
                         print_instr("SH Instruction Detected");
-                        //memory_array[r[rs1] + s_imm] = r[rs2]; 
+                        if ((int)r[rs1] + get_signed_s_imm(s_imm) > 0x0000FFFE){
+                            print_instr("Exception: address out of bound");
+                        }
+                        else if (((int)r[rs1] + get_signed_s_imm(s_imm)) & 0x00000001)
+                            print_instr("Warning: address unaligned");
+                        memory_array[(int)r[rs1] + get_signed_s_imm(s_imm) + 1] = r[rs2] & 0x0000FF00;
+                        memory_array[(int)r[rs1] + get_signed_s_imm(s_imm)]     = r[rs2] & 0x000000FF; 
         break;
         }
     break;
@@ -385,6 +433,8 @@ void current_instr::instr_execution(uint32_t r[]){
 
     if (!pc_changed)
         c_pc =  c_pc + 4;
+
+    c_sp = r[2];
 
     if (verbose){
         std:: stringstream op;

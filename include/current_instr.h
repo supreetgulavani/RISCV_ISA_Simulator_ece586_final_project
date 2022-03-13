@@ -28,11 +28,11 @@ class current_instr{
         i_imm = (c_instr & (0xFFF00000)) >> 20;
         s_imm = ((c_instr & (0xF80)) >> 7) | ((c_instr & (0xFE000000)) >> 20);
         b_imm = ((c_instr & (0x80000000)) >> 19) | ((c_instr & (0x80)) << 4) | ((c_instr & (0x7E000000)) >> 20) | ((c_instr & (0xF00)) >> 7) | 0x0;
-        u_imm = ((c_instr & (0xFFFFF000)) >> 12);
+        u_imm = (c_instr & (0xFFFFF000));
         j_imm = ((c_instr & (0x80000000)) >> 11) | (c_instr & (0xFF000)) | ((c_instr & (0x100000)) >> 9) | ((c_instr & (0x7FE00000)) >> 20) | 0x0;
     }
     
-    // Current instruction and sp and pc for the same  
+    // Current instruction and sp and pc for the same
     uint64_t& c_pc;
     uint64_t& c_sp;
     uint32_t c_instr;
