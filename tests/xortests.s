@@ -1,0 +1,13 @@
+addi a1,a1,1
+addi a2,a2,-4
+addi a3,a3,0
+xor s4,a3,a1
+xor a5,a2,a1
+xor a6,a2,a3
+addi a7,a7,10
+xor s1,a7,a1
+xor s2,a7,a2
+xor s3,a7,a3
+addi a4,a4,-5
+xor s5,a4,a2
+jr ra
