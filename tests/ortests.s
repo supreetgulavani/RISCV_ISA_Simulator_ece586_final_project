@@ -1,0 +1,11 @@
+addi a1,a1,10
+addi a2,a2,5
+addi a3,a3,-1
+addi a4,a4,0
+addi a5,a5,-4
+or s1,a1,a2
+or s2,a1,a3
+or s3,a1,a4
+or s4,a3,a4
+or s5,a3,a5
+jr ra
