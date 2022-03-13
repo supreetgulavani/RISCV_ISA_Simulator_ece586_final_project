@@ -43,10 +43,13 @@ build:
 debug: CXXFLAGS += -g -DDEBUG
 debug: all
 
+step: CXXFLAGS += -g -DDEBUG -DSTEP 
+step: all
+
 release: CXXFLAGS += -O2
 release: all
 
-.PHONY: all clean debug release build info
+.PHONY: all clean debug release step build info
 
 .DEFAULT_GOAL := release
 

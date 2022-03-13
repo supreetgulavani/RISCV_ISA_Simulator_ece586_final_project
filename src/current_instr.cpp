@@ -51,7 +51,7 @@ void current_instr::instr_execution(uint32_t r[]){
     r[2] = c_sp;    //// CORRECT??
     /////////////////////////////////
     bool pc_changed = false;
-    int mem_elements = 65500;
+    int mem_elements = 65300;
 
     switch (opcode){
     case r_type_opcode:
@@ -134,9 +134,9 @@ void current_instr::instr_execution(uint32_t r[]){
             //ADDI : Addition Immediate
             case addi_funct3: 
                             print_instr("ADDI Instruction Detected");
-                            std::cout << "r[rs1]: " << r[rs1] << std::endl;
+                            //std::cout << "r[rs1]: " << r[rs1] << std::endl;
                             r[rd] = (int)r[rs1] + get_signed_i_imm(i_imm);
-                            std::cout << "i_imm: " << get_signed_i_imm(i_imm) << std::endl;
+                            //std::cout << "i_imm: " << get_signed_i_imm(i_imm) << std::endl;
             break;
 
             //XORI (Immediate) 
@@ -258,6 +258,8 @@ void current_instr::instr_execution(uint32_t r[]){
             case jalr_funct3: 
                         print_instr("JALR Instruction Detected");
                         r[rd] = c_pc + 4;
+                        if (rd == 0)
+                            r[rd] = 0x0;
                         c_pc = ((int)r[rs1] + get_signed_i_imm(i_imm)) << 1;
                         if (c_pc & 0x00000003){
                             print_instr("Exception: Unaligned jump");
@@ -382,6 +384,8 @@ void current_instr::instr_execution(uint32_t r[]){
     case j_type_opcode: 
                 print_instr("JAL Instruction Detected");
                 r[rd] = c_pc + 4;
+                if (rd == 0)
+                            r[rd] = 0x0;
                 c_pc += get_signed_j_imm(j_imm); 
                 if (c_pc & 0x00000003){
                     print_instr("Exception: Unaligned jump");
@@ -393,7 +397,8 @@ void current_instr::instr_execution(uint32_t r[]){
         switch(funct3){
         case sw_funct3: 
                         print_instr("SW Instruction Detected");
-                        std::cout << "r[rs2]: " << r[rs2] << std::endl;
+                        std::cout << "r[rs2] (stuff to be saved): " << r[rs2] << std::endl;
+                        std::cout << "r[rs1] (addr where its to be saved): " << (int)r[rs1] + get_signed_s_imm(s_imm) << std::endl;
                         if ((int)r[rs1] + get_signed_s_imm(s_imm) > 0xFFFC){
                             print_instr("Exception: address out of bound");
                         }
@@ -450,14 +455,4 @@ void current_instr::instr_execution(uint32_t r[]){
     }    
 
 }
-
-
-
-
-
-
-
-
-
-
 
