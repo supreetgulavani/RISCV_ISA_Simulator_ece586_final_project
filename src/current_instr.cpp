@@ -126,6 +126,67 @@ void current_instr::instr_execution(uint32_t r[]){
                 break;
             }   
         break;
+
+        case 0x01:
+            switch(funct3) {
+                //MUL : Multiplication
+                case mul_funct3: 
+                                print_instr("MUL Instruction Detected");
+                                r[rd] = (int)r[rs1] * (int)r[rs2];
+                break;
+
+                //MULH : Multiplication
+                case mulh_funct3: 
+                                print_instr("MULH Instruction Detected");
+                                r[rd] = ((int64_t)r[rs1] * (int64_t)r[rs2]) >> 32;
+                break;
+
+                //MULHSU : Multiplication
+                case mulhsu_funct3: 
+                                print_instr("MULHSU Instruction Detected");
+                                r[rd] = ((int64_t)r[rs1] * (uint64_t)r[rs2]) >> 32;
+                break;
+
+                //MULHU : Multiplication
+                case mulhu_funct3: 
+                                print_instr("MULHU Instruction Detected");
+                                r[rd] = ((uint64_t)r[rs1] * (uint64_t)r[rs2]) >> 32;
+                break;
+
+                //DIV : Multiplication
+                case div_funct3: 
+                                print_instr("DIV Instruction Detected");
+                                if (r[rs2] == 0x0)
+                                    print_instr("Exception: divide by 0");
+                                r[rd] = (int)r[rs1] / (int)r[rs2];
+                break;
+
+                //DIVU : Multiplication
+                case divu_funct3: 
+                                print_instr("DIVU Instruction Detected");
+                                if (r[rs2] == 0x0)
+                                    print_instr("Exception: divide by 0");
+                                r[rd] = r[rs1] / r[rs2];
+                break;
+
+                //REM : Multiplication
+                case rem_funct3: 
+                                print_instr("REM Instruction Detected");
+                                if (r[rs2] == 0x0)
+                                    print_instr("Exception: divide by 0");
+                                r[rd] = (int)r[rs1] % (int)r[rs2];
+                break;
+
+                //REMU : Multiplication
+                case remu_funct3: 
+                                print_instr("REMU Instruction Detected");
+                                if (r[rs2] == 0x0)
+                                    print_instr("Exception: divide by 0");
+                                r[rd] = r[rs1] % r[rs2];
+                break;
+            }
+        break;
+
         }
     break;
 
@@ -135,8 +196,8 @@ void current_instr::instr_execution(uint32_t r[]){
             case addi_funct3: 
                             print_instr("ADDI Instruction Detected");
                             //std::cout << "r[rs1]: " << r[rs1] << std::endl;
-                            r[rd] = (int)r[rs1] + get_signed_i_imm(i_imm);
                             //std::cout << "i_imm: " << get_signed_i_imm(i_imm) << std::endl;
+                            r[rd] = (int)r[rs1] + get_signed_i_imm(i_imm);
             break;
 
             //XORI (Immediate) 

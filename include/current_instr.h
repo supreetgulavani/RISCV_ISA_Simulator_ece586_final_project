@@ -107,8 +107,8 @@ class current_instr{
     // RV32M Extra Credit Implementation
     static constexpr uint8_t mul_funct3    = 0x0;
     static constexpr uint8_t mulh_funct3   = 0x1;
-    static constexpr uint8_t mulhu_funct3  = 0x2;
-    static constexpr uint8_t mulhsu_funct3 = 0x3;
+    static constexpr uint8_t mulhsu_funct3 = 0x2;
+    static constexpr uint8_t mulhu_funct3  = 0x3;
     static constexpr uint8_t div_funct3    = 0x4;
     static constexpr uint8_t divu_funct3   = 0x5;
     static constexpr uint8_t rem_funct3    = 0x6;
