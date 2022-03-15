@@ -7,6 +7,11 @@
 #include <sstream>
 #include <array>
 
+#ifdef BREAK
+#include <algorithm>
+#include <vector>
+#endif
+
 #include "commondefs.h"
 #include "fileparse.h"
 #include "request.h"
@@ -32,6 +37,12 @@ class isa_sim{
     std::ofstream& isa_reg_file;
     
     isa_sim(std::ofstream& isa_reg_file);
+
+    #ifdef BREAK
+    std::vector<uint64_t> breakpoints;
+    void set_breakpoint(uint64_t pc);
+    bool is_breakpoint(uint64_t pc);
+    #endif
 
 
 };
