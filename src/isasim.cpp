@@ -3,6 +3,8 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <algorithm>
+#include <list>
 
 #include "commondefs.h"
 #include "fileparse.h"
@@ -10,15 +12,17 @@
 #include "current_instr.h"
 
 #ifdef STEP
-char step;
-char mem_step;
+char step = 'y';
 #endif
+
+
+std::list <int64_t> mylist;
 
 isa_sim::isa_sim(std::ofstream &isa_reg):
     isa_reg_file(isa_reg)
 {
         program_counter = 0;
-        stack_pointer = 65536;
+        stack_pointer = 0;
 }
 
 
@@ -31,26 +35,51 @@ void isa_sim::print_mem(){
     }
 }
 
+#ifdef BREAK
+void isa_sim::set_breakpoint(uint64_t pc)
+{
+    breakpoints.push_back(pc);
+}
+
+bool isa_sim::is_breakpoint(uint64_t pc)
+{
+    return (std::find(breakpoints.begin(), breakpoints.end(), pc) != breakpoints.end());
+}
+#endif
 
 void isa_sim::start_execution(){
 
     uint64_t current_pc = program_counter;
     uint64_t current_sp = (uint32_t)stack_address;
     while (1){
-        #ifdef STEP 
-            std::cout << "\nPress anything to step." << "\n" <<std::endl;
-            std::cin >> step;
+        mylist.push_back(current_pc);
+        #ifdef STEP
+        if (step == 'Y' || step == 'y') {
+            std::cout << "\nDo you want to step?(y/n)" << "\n" <<std::endl;
+            scanf("%c", &step);
+            getchar();
+        }
+        #endif
+        #ifdef BREAK
+        if (is_breakpoint(current_pc)) {
+            std::cout << "\nBreakpoint at " << current_pc << " . Press any key to continue.\n" << std::endl;
+            std:: stringstream op;
+            op << "Register values are:" << std::endl;
+            int reg_elements = 0;
+            for (int i = reg_elements; i <= 31; i++){
+                op << i << ":" << std::uppercase << std::hex << r[i] << "\t";
+            }
+            op << "\nProgram Counter:" << std:: uppercase << std::hex << current_pc << "\n" << std::endl;
+            std::cout << op.str();
+
+            // Accept any key
+            char c;
+            scanf("%c", &c);
+            getchar();
+        }
         #endif
         current_instr current(current_pc, current_sp, isa_reg_file);
         current.instr_execution(r);
-        /*
-        #ifdef STEP
-        std::cout << "Do you want mem?(y/n)" << "\n" << std::endl;
-        std::cin >> mem_step;
-        if (mem_step)
-            print_mem();
-        #endif
-        */
         if ((current.c_instr == 0x00008067) && (r[0x1] == 0x0))
             break;
     }
@@ -62,7 +91,7 @@ void isa_sim::start_execution(){
         for (int i = reg_elements; i <= 31; i++){
             op << i << ":" << std::uppercase << std::hex << r[i] << "\t";
         }
-    op << "\nProgram Counter:" << std:: uppercase << std::hex << current_pc << "\n" << std::endl;
+    op << "\nProgram Counter:" << *std::prev(mylist.end()) << '\n';
     std::cout << op.str();
     isa_reg_file << op.str();
 
