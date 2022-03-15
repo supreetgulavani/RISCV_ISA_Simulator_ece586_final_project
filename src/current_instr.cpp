@@ -495,6 +495,9 @@ void current_instr::instr_execution(uint32_t r[]){
         break;
         }
     break;
+
+    default: print_instr("Invalid Opcode");
+    break;
     }
 
     if (!pc_changed)

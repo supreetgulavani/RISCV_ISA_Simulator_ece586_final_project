@@ -38,7 +38,7 @@ void isa_sim::start_execution(){
     uint64_t current_sp = (uint32_t)stack_address;
     while (1){
         #ifdef STEP 
-            std::cout << "\nDo you want to step?(y/n)" << "\n" <<std::endl;
+            std::cout << "\nPress anything to step." << "\n" <<std::endl;
             std::cin >> step;
         #endif
         current_instr current(current_pc, current_sp, isa_reg_file);
