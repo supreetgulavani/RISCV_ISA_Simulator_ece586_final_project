@@ -596,8 +596,8 @@ void current_instr::instr_execution(uint32_t r[]){
         switch(funct3){
         case sw_funct3: 
             print_instr("SW Instruction Detected");
-            std::cout << "r[rs2] (stuff to be saved): " << r[rs2] << std::endl;
-            std::cout << "r[rs1] (addr where its to be saved): " << (int)r[rs1] + get_signed_s_imm(s_imm) << std::endl;
+            //std::cout << "r[rs2] (stuff to be saved): " << r[rs2] << std::endl;
+            //std::cout << "r[rs1] (addr where its to be saved): " << (int)r[rs1] + get_signed_s_imm(s_imm) << std::endl;
             if ((int)r[rs1] + get_signed_s_imm(s_imm) > 0xFFFC){
                 print_instr("Exception: address out of bound");
                 exit(1);
