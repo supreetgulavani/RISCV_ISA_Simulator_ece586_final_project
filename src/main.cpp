@@ -73,6 +73,7 @@ int main(int argc, char *argv[])
     std::cout << "Return Address: " << std::uppercase << std::hex << isa.return_addr << std::endl;
 
     request req; 
+
     // Print starting message
     std::cout << "\n -- Starting Simulation -- \n" << std::endl;
 
@@ -92,16 +93,9 @@ int main(int argc, char *argv[])
                 }
             }
             read_file(ip_string, req);
-
             std::cout  << req << std::endl;
-          /*  std::stringstream op;
-    
-            op  << "Instruction Location:" << req.instruction_location << "\tInstruction:" << std::hex << req.instruction << "\tProgram Counter:"<< std::uppercase << std::hex << isa.program_counter 
-                 << std::uppercase << std::hex << "\tStack Address:" << isa.stack_address << std::uppercase << std::hex << "\tStack Pointer:" << isa.stack_pointer << std::endl;
-            //std::cout << op.str();
-            // Add the parsed contents to a file  (showoff nothing else)
-            mem_fstream << op.str();*/
         }
+        
           if (!(ip_mem_fstream->is_open())) {
             std::cout << "\n -- Input file Over! -- \n" << std::endl;
             break;
@@ -113,13 +107,25 @@ int main(int argc, char *argv[])
     
     if (debug || verbose){
     //print mem image
-    std::cout << "\n-----------Memory--------------" << std::endl;
+    std::cout << "\n----------- Memory --------------" << std::endl;
     isa.print_mem();
-    std::cout << "\n---------End Memory------------" << std::endl;
+    std::cout << "\n--------- End Memory ------------" << std::endl;
     }
 
-    isa.start_execution();
+    #ifdef BREAK
+    // Ask for breakpoints
+    ask_bp:
+    int64_t bp;
+    std::cout << "Enter PC for breakpoint. Enter -1 to skip and start execution: ";
+    std::cin >> bp;
+    if (bp != -1) {
+      isa.set_breakpoint(bp);
+      goto ask_bp;
+    }
+    #endif
 
+    isa.start_execution();
+    std::cout << "\n" << std::endl;
       // Close output file
     mem_fstream.close();
     return 0;
