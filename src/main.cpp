@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     std::cout << "Return Address: " << std::uppercase << std::hex << isa.return_addr << std::endl;
 
     request req; 
-
+    
     // Print starting message
     std::cout << "\n -- Starting Simulation -- \n" << std::endl;
 
@@ -93,24 +93,31 @@ int main(int argc, char *argv[])
                 }
             }
             read_file(ip_string, req);
+            #ifdef DEBUG 
             std::cout  << req << std::endl;
+            #endif
         }
         
           if (!(ip_mem_fstream->is_open())) {
+            #ifdef DEBUG
             std::cout << "\n -- Input file Over! -- \n" << std::endl;
+            #endif
             break;
           }
+          
     }
 
     // Free the filestream heap
     delete ip_mem_fstream;
     
+    #ifdef DEBUG
     if (debug || verbose){
     //print mem image
     std::cout << "\n----------- Memory --------------" << std::endl;
     isa.print_mem();
     std::cout << "\n--------- End Memory ------------" << std::endl;
     }
+    #endif
 
     #ifdef BREAK
     // Ask for breakpoints
@@ -128,6 +135,7 @@ int main(int argc, char *argv[])
     std::cout << "\n" << std::endl;
       // Close output file
     mem_fstream.close();
+    std::cout << "\n -- Ending Simulation -- \n" << std::endl;
     return 0;
 
 }
