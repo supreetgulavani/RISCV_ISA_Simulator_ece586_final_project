@@ -10,6 +10,10 @@
     `make release` : Build without debug info printed to the console
     
     `make clean`   : Build gets cleaned i.e rm -rf
+    
+    `make step`   : Build with ability to step through instructions
+    
+    `make breakpoint`   : Build with ability to create multiple breakpoints (runtime)
 
 - You should now have the executable named `ece586_isa_simulator` in the top directory.
 - Run it as follows:
