@@ -2,6 +2,7 @@
 #define __COMMONDEF_H__
 
 #include <ostream>
+#include <list>
 
 extern bool verbose;
 extern bool debug;
