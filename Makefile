@@ -46,6 +46,9 @@ debug: all
 step: CXXFLAGS += -g -DDEBUG -DSTEP 
 step: all
 
+breakpoint: CXXFLAGS += -g -DDEBUG -DBREAK
+breakpoint: all
+
 release: CXXFLAGS += -O2
 release: all
 
