@@ -51,7 +51,7 @@ void current_instr::instr_execution(uint32_t r[]){
     bool pc_changed = false;
     
     // Used to print upper portion of the memory for stack 
-    int mem_elements = 65300;
+    //int mem_elements = 65300;
 
     switch (opcode){
     case r_type_opcode:
@@ -433,11 +433,11 @@ void current_instr::instr_execution(uint32_t r[]){
                     case 0x3F:  // READ
                         if (r[0xA] == 0x0){
                             char filename[r[0x0C]];
-                            std::cin.getline(filename, r[0x0C]);
+                            std::cin.getline(filename, (r[0x0C]+1));
+                            r[0xA] = std::cin.gcount() - 1;
                             int i = 0;
                             for (i = 0; i < r[0x0C]; i++){
                                 memory_array[r[0x0B] + i] = (const char)*(filename + i);
-                                r[0xA] += 1;
                                 //std::cout << memory_array[r[0x0B] + i] << std::endl;
                             }
                         }
@@ -449,12 +449,13 @@ void current_instr::instr_execution(uint32_t r[]){
 
                     case 0x40:  // WRITE
                         if (r[0xA] == 0x1){
-                            r[0xA] = 0x0;
                             int i = 0;
                             for (i = 0; i < r[0x0C]; i++){
-                                r[0xA] += 1;
-                                std::cout << memory_array[r[0x0B] + i] << std::ends;
+                                std::cout << memory_array[r[0x0B] + i];
+                                if (i > 65535 - r[0x0B])
+                                    break;
                             }
+                            r[0xA] = i;
                             std::cout << std::endl;
                         }
                         else{
@@ -608,9 +609,9 @@ void current_instr::instr_execution(uint32_t r[]){
             memory_array[(int)r[rs1] + get_signed_s_imm(s_imm) + 1] = (r[rs2] & 0x0000FF00) >> 8;
             memory_array[(int)r[rs1] + get_signed_s_imm(s_imm)]     = r[rs2] & 0x000000FF;
 
-            for (int i = mem_elements; i <= 65535; i++){
-                std::cout << i << ":" << std::uppercase << std::hex << (int)memory_array[i] << "\t";
-            }
+            //for (int i = mem_elements; i <= 65535; i++){
+            //    std::cout << i << ":" << std::uppercase << std::hex << (int)memory_array[i] << "\t";
+            //}
         break;
 
         case sb_funct3: 
@@ -660,4 +661,3 @@ void current_instr::instr_execution(uint32_t r[]){
     }    
 
 }
-
