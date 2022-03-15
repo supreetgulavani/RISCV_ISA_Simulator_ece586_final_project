@@ -35,10 +35,7 @@ void isa_sim::print_mem(){
 void isa_sim::start_execution(){
 
     uint64_t current_pc = program_counter;
-    /////////////////////////////////////////////////
-    /////   CORRECT?    /////////////////////////////
-    uint64_t current_sp = stack_pointer;
-    /////////////////////////////////////////////////
+    uint64_t current_sp = (uint32_t)stack_address;
     while (1){
         #ifdef STEP 
             std::cout << "\nDo you want to step?(y/n)" << "\n" <<std::endl;
@@ -46,13 +43,14 @@ void isa_sim::start_execution(){
         #endif
         current_instr current(current_pc, current_sp, isa_reg_file);
         current.instr_execution(r);
-        //update the pc and sp here
-        /*#ifdef STEP
+        /*
+        #ifdef STEP
         std::cout << "Do you want mem?(y/n)" << "\n" << std::endl;
         std::cin >> mem_step;
         if (mem_step)
             print_mem();
-        #endif*/
+        #endif
+        */
         if ((current.c_instr == 0x00008067) && (r[0x1] == 0x0))
             break;
     }
