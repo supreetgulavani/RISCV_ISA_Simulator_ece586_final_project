@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     std::cout << "Program Counter: " << std::uppercase << std::hex << isa.program_counter << std::endl;
 
     // Take Stack Address as input
-    isa.stack_address = std::strtoul(argv[4], nullptr, 16);
+    isa.stack_address = std::strtoul(argv[4], nullptr, 10);
     std::cout << "Stack Address: " << std::uppercase << std::hex << isa.stack_address << std::endl;
 
     // Verbose Mode (Needed for demo)

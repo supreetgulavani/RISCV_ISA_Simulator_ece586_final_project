@@ -50,7 +50,7 @@ bool isa_sim::is_breakpoint(uint64_t pc)
 void isa_sim::start_execution(){
 
     uint64_t current_pc = program_counter;
-    uint64_t current_sp = (uint32_t)stack_address;
+    uint64_t current_sp = (uint32_t)stack_address + 1;
     while (1){
         mylist.push_back(current_pc);
         #ifdef STEP
