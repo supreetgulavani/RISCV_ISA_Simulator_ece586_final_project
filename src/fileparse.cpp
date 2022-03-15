@@ -53,8 +53,10 @@ void read_file(std::string ip_string, request& req)
         if (substr_begin != substr_end) {
             if(substr_end < 1000){
             tokens[token_count] = ip_string.substr(substr_begin, substr_end - substr_begin);
+            #ifdef DEBUG
             //std::cout << "Begin: " << substr_begin << " End: " << substr_end << std::endl;
             std::cout << tokens[token_count] << "\t";
+            #endif
 
             token_count++;
             token_valid = true;
