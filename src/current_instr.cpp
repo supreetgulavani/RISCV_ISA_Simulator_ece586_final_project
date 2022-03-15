@@ -47,10 +47,10 @@ uint64_t current_instr::get_power (uint64_t base, uint64_t exponent) {
 
 void current_instr::instr_execution(uint32_t r[]){
 
-    /////////////////////////////////
-    r[2] = c_sp;    //// CORRECT??
-    /////////////////////////////////
+    r[2] = c_sp;
     bool pc_changed = false;
+    
+    // Used to print upper portion of the memory for stack 
     int mem_elements = 65300;
 
     switch (opcode){
@@ -424,6 +424,49 @@ void current_instr::instr_execution(uint32_t r[]){
                 case 0x0: 
                     print_instr("ECALL Instruction Detected");
                     //Develop your ECALL instr implementation here
+                    switch (r[0x11]){
+                    case 0x5E:  // EXIT
+                        r[0xA] = 0x0;
+                        exit(1);
+                    break;
+                    
+                    case 0x3F:  // READ
+                        if (r[0xA] == 0x0){
+                            char filename[r[0x0C]];
+                            std::cin.getline(filename, r[0x0C]);
+                            int i = 0;
+                            for (i = 0; i < r[0x0C]; i++){
+                                memory_array[r[0x0B] + i] = (const char)*(filename + i);
+                                r[0xA] += 1;
+                                //std::cout << memory_array[r[0x0B] + i] << std::endl;
+                            }
+                        }
+                        else{
+                            print_instr("Exception: Invalid FILE DESCRIPTOR");
+                            exit(1);
+                        }
+                    break;
+
+                    case 0x40:  // WRITE
+                        if (r[0xA] == 0x1){
+                            r[0xA] = 0x0;
+                            int i = 0;
+                            for (i = 0; i < r[0x0C]; i++){
+                                r[0xA] += 1;
+                                std::cout << memory_array[r[0x0B] + i] << std::ends;
+                            }
+                            std::cout << std::endl;
+                        }
+                        else{
+                            print_instr("Exception: Invalid FILE DESCRIPTOR");
+                            exit(1);
+                        }
+                    break;
+
+                    default: print_instr("Exception: Invalid or Unsupported ECALL");
+                            exit(1);
+                    break;
+                    }
                 break;
 
                 case 0x1: 
