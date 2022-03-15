@@ -435,7 +435,7 @@ void current_instr::instr_execution(uint32_t r[]){
                             char filename[r[0x0C]];
                             std::cin.getline(filename, (r[0x0C]+1));
                             r[0xA] = std::cin.gcount() - 1;
-                            int i = 0;
+                            uint32_t i = 0;
                             for (i = 0; i < r[0x0C]; i++){
                                 memory_array[r[0x0B] + i] = (const char)*(filename + i);
                                 //std::cout << memory_array[r[0x0B] + i] << std::endl;
@@ -449,7 +449,7 @@ void current_instr::instr_execution(uint32_t r[]){
 
                     case 0x40:  // WRITE
                         if (r[0xA] == 0x1){
-                            int i = 0;
+                            uint32_t i = 0;
                             for (i = 0; i < r[0x0C]; i++){
                                 std::cout << memory_array[r[0x0B] + i];
                                 if (i > 65535 - r[0x0B])
