@@ -27,7 +27,6 @@ public:
     }
     
     //loading memory with program instr
-
     void load_mem(request &req){
 
         memory_array[req.instruction_location]     = (req.instruction & (0x000000FF));
