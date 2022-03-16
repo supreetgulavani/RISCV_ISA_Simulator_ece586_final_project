@@ -19,7 +19,7 @@
 // ISA SIMULATOR CLASS ...only class. B)
 class isa_sim{
     public:
-    uint64_t program_counter;
+    uint32_t program_counter;
     uint64_t stack_address;
     uint64_t stack_pointer = 0;
     uint64_t return_addr = 0;
