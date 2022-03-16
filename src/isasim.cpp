@@ -49,7 +49,7 @@ bool isa_sim::is_breakpoint(uint64_t pc)
 
 void isa_sim::start_execution(){
 
-    uint64_t current_pc = program_counter;
+    uint32_t current_pc = program_counter;
     uint64_t current_sp = (uint32_t)stack_address + 1;
     while (1){
         mylist.push_back(current_pc);
@@ -80,8 +80,9 @@ void isa_sim::start_execution(){
         #endif
         current_instr current(current_pc, current_sp, isa_reg_file);
         current.instr_execution(r);
-        if ((current.c_instr == 0x00008067) && (r[0x1] == 0x0))
-            break;
+        if (((current.c_instr == 0x00008067) && (r[0x1] == 0x0)) | (current.c_instr == 0x00000000))
+
+        break;
     }
     if (debug){
         

@@ -51,9 +51,30 @@ void current_instr::instr_execution(uint32_t r[]){
     bool pc_changed = false;
     
     // Used to print upper portion of the memory for stack 
-    //int mem_elements = 65300;
+    int mem_elements = 65300;
 
     switch (opcode){
+    
+    /*case 0x0:
+        switch (funct3)
+        {
+        case 0x0:
+                switch(funct7)
+                case 0x0:
+                    print_instr("HALT");
+                    r[rd] = 0x0;
+                    std:: cout << "Program Counter" << c_pc << std:: endl;
+                    std::cout << "Register values are:" << std::endl;
+                    
+                    for (int i = 0; i <= 31; i++){
+                        std::cout << i << ":" << std::uppercase << std::hex << r[i] << "\t";
+                    }
+                    abort(); 
+                break;
+        break;
+        }
+    break;*/
+
     case r_type_opcode:
         switch(funct7) {
         case 0x00:
@@ -137,8 +158,8 @@ void current_instr::instr_execution(uint32_t r[]){
                 //SRA : Shift Right Arithmetic
                 case sra_funct3: 
                     print_instr("SRA Instruction Detected");
-                    if (r[rs1] & 80000000){
-                        r[rd] = (r[rs1] >> (int)r[rs2]) | ((get_power(2, ((int)r[rs2]+1)) - 1) << (32-(int)r[rs2]));
+                    if (r[rs1] & 0x80000000){
+                        r[rd] = ((int)r[rs1] >> (int)r[rs2]) | ((-1) << (32-(int)r[rs2]));
                         if (rd == 0)
                             r[rd] = 0x0;
                     }
@@ -287,7 +308,7 @@ void current_instr::instr_execution(uint32_t r[]){
                     switch(funct7){
                         case srai_funct7:
                             print_instr("SRAI Instruction Detected");
-                            if (r[rs1] & 80000000)
+                            if (r[rs1] & 0x80000000)
                                 r[rd] = (r[rs1] >> get_signed_i_imm(i_imm)) | ((get_power(2, (get_signed_i_imm(i_imm)+1)) - 1) << (32-get_signed_i_imm(i_imm)));
                             else
                                 r[rd] = r[rs1] >> get_signed_i_imm(i_imm);
@@ -316,7 +337,7 @@ void current_instr::instr_execution(uint32_t r[]){
             //SLTIU : Set Less Than Immediate Unsigned
             case sltiu_funct3: 
                 print_instr("SLTIU Instruction Detected");
-                r[rd] =  r[rs1] < i_imm ? 1 : 0;
+                r[rd] =  r[rs1] < (uint32_t)get_signed_i_imm(i_imm) ? 1 : 0;
                 if (rd == 0)
                     r[rd] = 0x0;
             break;
@@ -402,7 +423,7 @@ void current_instr::instr_execution(uint32_t r[]){
                 r[rd] = c_pc + 4;
                 if (rd == 0)
                     r[rd] = 0x0;
-                c_pc = ((int)r[rs1] + get_signed_i_imm(i_imm)) << 1;
+                c_pc = ((int)r[rs1] + get_signed_i_imm(i_imm)) & 0xFFFFFFFE;
                 if (c_pc & 0x00000003){
                     print_instr("Exception: Unaligned jump");
                     exit(1);
@@ -499,10 +520,10 @@ void current_instr::instr_execution(uint32_t r[]){
             case bne_funct3:
                 print_instr("BNE Instruction Detected");
                 if (r[rs1] != r[rs2]){
-                c_pc += get_signed_b_imm(b_imm);
-                if (c_pc & 0x00000003){
-                    print_instr("Exception: Unaligned jump");
-                    exit(1);
+                    c_pc += get_signed_b_imm(b_imm);
+                    if (c_pc & 0x00000003){
+                        print_instr("Exception: Unaligned jump");
+                        exit(1);
                 }
                 pc_changed = true;
                 }
@@ -537,7 +558,7 @@ void current_instr::instr_execution(uint32_t r[]){
             // BLTU : Branch if Less Than Unsigned
             case bltu_funct3: 
                 print_instr("BLTU Instruction Detected");
-                if ((int)r[rs1] < (int)r[rs2]) {
+                if (r[rs1] < r[rs2]) {
                 c_pc += get_signed_b_imm(b_imm);
                 if (c_pc & 0x00000003){
                     print_instr("Exception: Unaligned jump");
@@ -550,7 +571,7 @@ void current_instr::instr_execution(uint32_t r[]){
             // BGEU : Branch if Greater than or Equal Unsigned
             case bgeu_funct3: 
                 print_instr("BGEU Instruction Detected");
-                if ((int)r[rs1] >= (int)r[rs2]) {
+                if (r[rs1] >= r[rs2]) {
                 c_pc += get_signed_b_imm(b_imm);
                 if (c_pc & 0x00000003){
                     print_instr("Exception: Unaligned jump");
@@ -573,7 +594,7 @@ void current_instr::instr_execution(uint32_t r[]){
     //AUIPC: Add Upper Immediate to PC
     case 0x17: 
         print_instr("AUIPC Instruction Detected");
-        r[rd] = (int)c_pc + (int)u_imm;
+        r[rd] = c_pc + u_imm;
         if (rd == 0)
             r[rd] = 0x0;
     break;
@@ -609,9 +630,9 @@ void current_instr::instr_execution(uint32_t r[]){
             memory_array[(int)r[rs1] + get_signed_s_imm(s_imm) + 1] = (r[rs2] & 0x0000FF00) >> 8;
             memory_array[(int)r[rs1] + get_signed_s_imm(s_imm)]     = r[rs2] & 0x000000FF;
 
-            //for (int i = mem_elements; i <= 65535; i++){
-            //    std::cout << i << ":" << std::uppercase << std::hex << (int)memory_array[i] << "\t";
-            //}
+            for (int i = mem_elements; i <= 65535; i++){
+                std::cout << i << ":" << std::uppercase << std::hex << (int)memory_array[i] << "\t";
+            }
         break;
 
         case sb_funct3: 
@@ -631,8 +652,12 @@ void current_instr::instr_execution(uint32_t r[]){
             }
             else if (((int)r[rs1] + get_signed_s_imm(s_imm)) & 0x00000001)
                 print_instr("Warning: address unaligned");
-            memory_array[(int)r[rs1] + get_signed_s_imm(s_imm) + 1] = r[rs2] & 0x0000FF00;
-            memory_array[(int)r[rs1] + get_signed_s_imm(s_imm)]     = r[rs2] & 0x000000FF; 
+            memory_array[(int)r[rs1] + get_signed_s_imm(s_imm) + 1] = (r[rs2] & 0x0000FF00) >> 8;
+            memory_array[(int)r[rs1] + get_signed_s_imm(s_imm)]     = r[rs2] & 0x000000FF;
+
+            for (int i = mem_elements; i <= 65535; i++){
+                std::cout << i << ":" << std::uppercase << std::hex << (int)memory_array[i] << "\t";
+            }            
         break;
         }
     break;
