@@ -14,7 +14,7 @@
 
 class current_instr{ 
     public:
-    explicit current_instr(uint64_t& pc, uint64_t& sp, std::ofstream& current_instr_reg):
+    explicit current_instr(uint32_t& pc, uint64_t& sp, std::ofstream& current_instr_reg):
     c_pc(pc), c_sp(sp), current_instr_reg_file(current_instr_reg) 
     {
         c_instr = (uint32_t)memory_array[c_pc] | (uint32_t)(memory_array[c_pc + 1] << 8) | (uint32_t)(memory_array[c_pc + 2] << 16) | (uint32_t)(memory_array[c_pc + 3] << 24);
@@ -33,7 +33,7 @@ class current_instr{
     }
     
     // Current instruction and sp and pc for the same
-    uint64_t& c_pc;
+    uint32_t& c_pc;
     uint64_t& c_sp;
     uint32_t c_instr;
 
